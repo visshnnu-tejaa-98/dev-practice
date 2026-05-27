@@ -20,6 +20,7 @@ const QueryExample = () => {
     isSuccess, // if the query was success
     isStale, // if the query went to stale
     status, // ! Also you will get all these info in a single variable called status
+    refetch, // !used to refecth the data when the query went to stale or you want to fore fetch the data when you need.
   } = useQuery({
     queryKey: ["posts"],
     queryFn: fetchData,
@@ -34,6 +35,8 @@ const QueryExample = () => {
       <h2>1. Intro and setup</h2>
       <p>This is our first query without tanstack query</p>
       <button onClick={() => setLoadPosts(true)}>Load Posts</button>
+      {/*You can check in inspect tab for refetch */}
+      <button onClick={refetch}>Refetch</button>
       {posts &&
         posts.map((post) => (
           <div>
