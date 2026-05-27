@@ -10,6 +10,11 @@ const PostList = () => {
       );
       return res.json();
     },
+    staleTime: 5 * 1000, // millisectons 5000 for 5 sec
+    gcTime: 5 * 1000, // how long unused query data should stay in memory
+    refetchOnWindowFocus: true, // ! It refetches when we change tabs and come back to the same tab - Make sure staleTime: 0 to see the difference, here state time have more precidence
+    refetchOnReconnect: true, // When internet disconnect and connects again, we want to refetch the data
+    // refetchInterval: 3 * 1000, // it refetchs again and again to get data up to date like stock market applications
   });
   return (
     <div>
