@@ -1,4 +1,5 @@
 import "./App.css";
+import CashingExample from "./components/CashingExample";
 import MutationExample from "./components/MutationExample";
 import QueryExample from "./components/QueryExample";
 
@@ -7,7 +8,8 @@ function App() {
     <>
       <h1>Hello Tanstack Query</h1>
       {/* <QueryExample /> */}
-      <MutationExample />
+      {/* <MutationExample /> */}
+      <CashingExample />
     </>
   );
 }

@@ -1,0 +1,45 @@
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+
+const PostList = () => {
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      const res = await fetch(
+        "https://jsonplaceholder.typicode.com/posts?_limit=5",
+      );
+      return res.json();
+    },
+  });
+  return (
+    <div>
+      {isLoading && <p>Loading....</p>}
+      {isFetching && <p>Background Fetchong...</p>}
+      {data &&
+        data.map((post) => (
+          <div key={post.id}>
+            <p>{post.title}</p>
+          </div>
+        ))}
+    </div>
+  );
+};
+
+const Cashing = () => {
+  const [show, setShow] = useState(true);
+  return (
+    <div className="section">
+      <h2>3. Cashing</h2>
+      <p>
+        Toggle this component off and on to show Tanstack query keeps data in
+        cache
+      </p>
+      <button onClick={() => setShow(!show)}>
+        {show ? "Unmount Component" : "Mount Component"}
+      </button>
+      {show && <PostList />}
+    </div>
+  );
+};
+
+export default Cashing;
