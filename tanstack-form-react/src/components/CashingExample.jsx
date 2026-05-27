@@ -18,7 +18,9 @@ const PostList = () => {
       {data &&
         data.map((post) => (
           <div key={post.id}>
-            <p>{post.title}</p>
+            <p>
+              {post.id} - {post.title}
+            </p>
           </div>
         ))}
     </div>
@@ -34,6 +36,8 @@ const Cashing = () => {
         Toggle this component off and on to show Tanstack query keeps data in
         cache
       </p>
+      {/* Toggle this button to show and hide the Post list component */}
+      {/* You will be seeing an API Call in inspect tab fro every time you show the component */}
       <button onClick={() => setShow(!show)}>
         {show ? "Unmount Component" : "Mount Component"}
       </button>
