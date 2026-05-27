@@ -17,7 +17,13 @@ const MutationExample = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  const { mutate } = useMutation({ mutationFn: createPost });
+  const {
+    mutate,
+    data: newPost,
+    isPending,
+    isError,
+    error,
+  } = useMutation({ mutationFn: createPost });
   return (
     <div>
       <h2>2. Mutations</h2>
@@ -46,11 +52,20 @@ const MutationExample = () => {
 
       <button
         onClick={() => {
-          mutate({ title, body, userId: 1 });
+          mutate({ title, body, userId: 2 });
         }}
       >
         Create Post
       </button>
+
+      {isPending && <p>Creating Post...</p>}
+      {isError && <p>Something went wrong : {error.message}</p>}
+      {newPost && (
+        <div className="card">
+          <h4>{newPost.title}</h4>
+          <p>{newPost.body}</p>
+        </div>
+      )}
     </div>
   );
 };
