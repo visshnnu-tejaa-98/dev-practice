@@ -1,7 +1,8 @@
+import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 async function createPost(newPost) {
-  const url = "";
+  const url = "https://jsonplaceholder.typicode.com/posts/";
   const res = await fetch(url, {
     method: "POST",
     body: JSON.stringify(newPost),
@@ -15,6 +16,8 @@ async function createPost(newPost) {
 const MutationExample = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+
+  const { mutate } = useMutation({ mutationFn: createPost });
   return (
     <div>
       <h2>2. Mutations</h2>
@@ -41,7 +44,13 @@ const MutationExample = () => {
       <br />
       <br />
 
-      <button>Create Post</button>
+      <button
+        onClick={() => {
+          mutate({ title, body, userId: 1 });
+        }}
+      >
+        Create Post
+      </button>
     </div>
   );
 };
