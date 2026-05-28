@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useInfiniteQuery,
+  keepPreviousData,
+} from "@tanstack/react-query";
 
 async function fetchPosts(page) {
-  const url = "";
-  const res = await fetchPosts(url);
+  const url = `https://jsonplaceholder.typicode.com/posts?_page=${page}&_limit=5`;
+  const res = await fetch(url);
   return res.json();
 }
 
 async function fetchInfinitePosts({ pageParam = 1 }) {
-  const url = "";
+  const url = `https://jsonplaceholder.typicode.com/posts?_page=${pageParam}&_limit=5`;
   const res = await fetch(url);
   return res.json();
 }
@@ -22,6 +26,7 @@ function PaginationAndInfiniteQueriesExample() {
         infinite queries are useful for load more buttons and infinitescroll
       </p>
       {/* Add component here */}
+      <PaginationExample />
     </div>
   );
 }
@@ -37,7 +42,8 @@ function PaginationExample() {
   } = useQuery({
     queryKey: ["posts", page],
     queryFn: () => fetchPosts(page),
-    placeholderData: keepPreviousData,
+    placeholderData: keepPreviousData, // ! To kepp previous data
+    staleTime: 60 * 1000, // 60 sec
   });
 
   return (
@@ -51,7 +57,7 @@ function PaginationExample() {
           onClick={() => {
             setPage((prev) => Math.max(prev - 1, 1));
           }}
-          disabled={(page = 1)}
+          disabled={page === 1}
         >
           Previous Page
         </button>
