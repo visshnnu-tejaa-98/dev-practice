@@ -26,7 +26,8 @@ function PaginationAndInfiniteQueriesExample() {
         infinite queries are useful for load more buttons and infinitescroll
       </p>
       {/* Add component here */}
-      <PaginationExample />
+      {/* <PaginationExample /> */}
+      <InfiniteQueryExample />
     </div>
   );
 }
@@ -113,8 +114,11 @@ function InfiniteQueryExample() {
         <div key={pageIndex}>
           {page.map((post) => (
             <div key={post.id} className="card">
-              <p>{post.title}</p>
+              <p>
+                {post.id} - {post.title}
+              </p>
               <p>{post.body}</p>
+              <hr />
             </div>
           ))}
         </div>
