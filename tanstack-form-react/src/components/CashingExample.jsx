@@ -67,3 +67,7 @@ const Cashing = () => {
 };
 
 export default Cashing;
+
+// * here if you observer clearly, you feel like it is same as refetch function right?
+// * but actually not, because refetch needs to be in the same component wehere we called useQuery for that query
+// * but invalidate can be in any other file, any other component
