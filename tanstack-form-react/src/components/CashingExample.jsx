@@ -1,5 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+
+// ? when we are sure when the data is stale and stale time is still in grace period
+
+// * Lot of tikmes, you want to force the data to refeched again because something gets happesns
+// * and we rcognise that we have a list of posts and we have created a new post, and then the posts data is not updated with new post
+// * here the new posts data is not updated. and we wneed to force that query to become stale by invalidating that query using its query key
+// * we do not have a perfect example, so we will be working here only
 
 const PostList = () => {
   const { data, isLoading, isFetching } = useQuery({
@@ -10,10 +17,10 @@ const PostList = () => {
       );
       return res.json();
     },
-    staleTime: 5 * 1000, // millisectons 5000 for 5 sec
+    staleTime: 60 * 1000, // millisectons 5000 for 5 sec
     gcTime: 5 * 1000, // how long unused query data should stay in memory
-    refetchOnWindowFocus: true, // ! It refetches when we change tabs and come back to the same tab - Make sure staleTime: 0 to see the difference, here state time have more precidence
-    refetchOnReconnect: true, // * When internet disconnect and connects again, we want to refetch the data
+    // refetchOnWindowFocus: true, // ! It refetches when we change tabs and come back to the same tab - Make sure staleTime: 0 to see the difference, here state time have more precidence
+    // refetchOnReconnect: true, // * When internet disconnect and connects again, we want to refetch the data
     // refetchInterval: 3 * 1000, // * it refetchs again and again to get data up to date like stock market applications
   });
   return (
@@ -34,6 +41,13 @@ const PostList = () => {
 
 const Cashing = () => {
   const [show, setShow] = useState(true);
+  const queryClient = useQueryClient();
+
+  const invalidateQuery = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["posts"],
+    });
+  };
   return (
     <div className="section">
       <h2>3. Cashing</h2>
@@ -46,6 +60,7 @@ const Cashing = () => {
       <button onClick={() => setShow(!show)}>
         {show ? "Unmount Component" : "Mount Component"}
       </button>
+      <button onClick={invalidateQuery}>Invalidate Query</button>
       {show && <PostList />}
     </div>
   );
