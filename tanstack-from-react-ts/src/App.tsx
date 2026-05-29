@@ -2,6 +2,7 @@ import "./App.css";
 import QueryExample from "./components/QueryExample";
 import MuataionExample from "./components/MutationExample";
 import Cashing from "./components/Cashing";
+import PaginationExample from "./components/PaginationExample";
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
 
       {/* <QueryExample /> */}
       {/* <MuataionExample /> */}
-      <Cashing />
+      {/* <Cashing /> */}
+      <PaginationExample />
     </>
   );
 }
