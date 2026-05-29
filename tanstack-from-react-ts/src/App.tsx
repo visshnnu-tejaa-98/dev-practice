@@ -3,6 +3,7 @@ import QueryExample from "./components/QueryExample";
 import MuataionExample from "./components/MutationExample";
 import Cashing from "./components/Cashing";
 import PaginationExample from "./components/PaginationExample";
+import InfiniteQueriesExample from "./components/InfiniteQueriesExample";
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
       {/* <QueryExample /> */}
       {/* <MuataionExample /> */}
       {/* <Cashing /> */}
-      <PaginationExample />
+      {/* <PaginationExample /> */}
+      <InfiniteQueriesExample />
     </>
   );
 }
