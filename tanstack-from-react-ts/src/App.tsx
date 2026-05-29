@@ -1,6 +1,7 @@
 import "./App.css";
 import QueryExample from "./components/QueryExample";
 import MuataionExample from "./components/MutationExample";
+import Cashing from "./components/Cashing";
 
 function App() {
   return (
@@ -8,7 +9,8 @@ function App() {
       <h1>Hello React from tansatck TS App</h1>
 
       {/* <QueryExample /> */}
-      <MuataionExample />
+      {/* <MuataionExample /> */}
+      <Cashing />
     </>
   );
 }
