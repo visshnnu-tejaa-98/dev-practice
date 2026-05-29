@@ -9,7 +9,7 @@ const router = createRouter({
   defaultPreload: "intent",
   scrollRestoration: true,
 });
-
+// Link to explore more on Tanstack router: https://tanstack.com/router/latest/docs/installation/manual
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
