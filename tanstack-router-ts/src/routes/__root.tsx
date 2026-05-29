@@ -11,7 +11,9 @@ const RootLayout = () => (
         About
       </Link>
       <Link to="/contact ">Contact</Link>
-      <Link to="/posts">Posts</Link>
+      <Link to="/posts" search={{ q: "post2" }}>
+        Posts
+      </Link>
     </div>
     <hr />
     <Outlet />
