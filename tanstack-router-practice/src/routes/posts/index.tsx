@@ -32,15 +32,15 @@ function Posts() {
     queryFn: fetchData,
   });
 
-  if (isLoading) <p>Loading...</p>;
-  if (isError) <p>{error.message}</p>;
+  if (isLoading) return <p>Loading...</p>;
+  if (isError) return <p>{error.message}</p>;
 
   return (
     <div>
       <h1>Posts</h1>
       {posts &&
         posts.map((post: Post) => (
-          <p>
+          <p key={post.id}>
             <Link to="/posts/$id" params={{ id: post.id.toString() }}>
               {post.title}
             </Link>
