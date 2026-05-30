@@ -14,6 +14,8 @@ export const Route = createFileRoute("/posts/$id")({
     const data = await response.json();
     return { data };
   },
+  pendingComponent: () => <div>Loading...</div>,
+  errorComponent: () => <div>Error Occured</div>,
 });
 
 function RouteComponent() {
