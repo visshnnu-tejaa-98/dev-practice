@@ -1,4 +1,6 @@
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 
-export const db = drizzle(process.env.POSTGRES_URI!);
+const db = drizzle(process.env.POSTGRES_URI!);
+
+export default db;
