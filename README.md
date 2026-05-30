@@ -1,13 +1,1 @@
-- [x] Configure Base App using Typescript
-  - [x] npm init -y
-  - [x] tsc —init
-  - [x] npx gitignore Node
-  - [x] npm i express
-  - [x] npm @types/node
-  - [x] npm @types/express
-  - [x] npm i tsc-watch
-  - [x] add index file in src directory with console to avoid ts error
-  - [x] setup some scripts in package.json
-    - [x] dev: tsc-watch —onSuccess “node dist/index”
-    - [x] start: node dist/index
-    - [x] build: tsc -p .
+This is the place where i will add my exploirations on some technologies in web development
