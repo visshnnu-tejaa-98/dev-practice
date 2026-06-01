@@ -1,15 +1,19 @@
-import type { Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 import { sendVerificationEmail } from "../../common/config/nodemailer";
-import { ConflictError } from "../../common/utils/api-error";
-import ApiResponse from "../../common/utils/api-response";
+import { BadRequestError, ConflictError } from "../../common/utils/api-error";
 import {
   generateSalt,
   generateVerifyEmailToken,
   hash,
   hashToken,
+  verifyEmailToken,
 } from "../../common/utils/jwt";
-import { checkUserWithEmailExists, insertUser } from "./auth.utils";
-import { validateRegisterInputData } from "./auth.validation";
+import {
+  checkUserWithEmailExists,
+  getUserByEmailVerifyToken,
+  insertUser,
+  updateUserAfterEmailVerification,
+} from "./auth.utils";
 
 const register = async ({
   name,
@@ -40,10 +44,21 @@ const register = async ({
     verificationToken: hashedVerificationToken,
   });
 
-  //   await sendVerificationEmail(email, verificationToken);
-  console.log({ id: userId?.id, verificationToken: verificationToken });
+  // await sendVerificationEmail(email, verificationToken);
 
   return { id: userId?.id, verificationToken: verificationToken };
 };
 
-export { register };
+const verifyEmail = async ({ token }: { token: string }) => {
+  const hashedToken = hashToken(token);
+  const user = await getUserByEmailVerifyToken(hashedToken);
+  const decoded = verifyEmailToken(token) as JwtPayload;
+
+  if (user.email !== decoded.email)
+    throw new BadRequestError("TOken Expired or Invalid token");
+  const updatedUser = await updateUserAfterEmailVerification(decoded.email);
+
+  return updatedUser;
+};
+
+export { register, verifyEmail };

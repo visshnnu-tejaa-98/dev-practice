@@ -18,5 +18,14 @@ const registerSchema = z.object({
 
 type RegisterInputType = z.infer<typeof registerSchema>;
 
-export { registerSchema };
-export type { RegisterInputType };
+const verifyEmailSchema = z.object({
+  token: z
+    .string()
+    .trim()
+    .describe("Verification email token of the registrant"),
+});
+
+type VerificationEmailSchemaType = z.infer<typeof verifyEmailSchema>;
+
+export { registerSchema, verifyEmailSchema };
+export type { RegisterInputType, VerificationEmailSchemaType };
