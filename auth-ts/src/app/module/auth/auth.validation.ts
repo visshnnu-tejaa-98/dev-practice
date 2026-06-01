@@ -1,4 +1,3 @@
-import { ZodError } from "zod";
 import { RegisterInputType, registerSchema } from "./auth.schema";
 import { ValidationError } from "../../common/utils/api-error";
 

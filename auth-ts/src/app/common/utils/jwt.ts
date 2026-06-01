@@ -33,8 +33,18 @@ const generateVerifyEmailToken = (email: string) => {
   const options: SignOptions = {
     expiresIn: expiresIn as StringValue,
   };
-  const token = jwt.sign(payload, secret, options);
-  return token;
+  return jwt.sign(payload, secret, options);
 };
 
-export { generateSalt, hash, hashToken, generateVerifyEmailToken };
+const verifyEmailToken = (token: string) => {
+  const secret = env.JWT_VERIFY_TOKEN_SECRET;
+  return jwt.verify(token, secret);
+};
+
+export {
+  generateSalt,
+  hash,
+  hashToken,
+  generateVerifyEmailToken,
+  verifyEmailToken,
+};
