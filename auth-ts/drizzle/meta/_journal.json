@@ -8,6 +8,13 @@
       "when": 1780137859691,
       "tag": "0000_far_gorilla_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1780302943004,
+      "tag": "0001_huge_stone_men",
+      "breakpoints": true
     }
   ]
 }

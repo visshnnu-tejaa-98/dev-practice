@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
-export const errorMiddleWare = (err: any, res: Response) => {
+export const errorMiddleWare = (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
   const errorCode = err.errorCode || "INTERNAL_SERVER_ERROR";
@@ -12,7 +17,9 @@ export const errorMiddleWare = (err: any, res: Response) => {
     details: {
       code: errorCode,
       error:
-        isProduction ? "An unexpected error occurred" : err.stack || message,
+        isProduction ?
+          "An unexpected error occurred"
+        : (err.details ?? err.stack ?? message),
     },
   };
 
