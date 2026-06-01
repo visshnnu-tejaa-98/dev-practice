@@ -1,17 +1,25 @@
 class ApiError extends Error {
   public statusCode: number;
   public errorCode: string;
+  public details: any;
 
-  constructor(statusCode: number, message: string, errorCode: string = "") {
+  constructor(
+    statusCode: number,
+    message: string,
+    errorCode: string = "",
+    details?: any,
+  ) {
     super(message);
     this.statusCode = statusCode;
     this.errorCode = errorCode;
+    this.details = details;
   }
 }
 
 export class ValidationError extends ApiError {
-  constructor() {
-    super(400, "Validation Error", "VALIDATION_ERROR");
+  constructor(details?: any) {
+    console.log(111, details);
+    super(400, "Validation Error", "VALIDATION_ERROR", details);
   }
 }
 
@@ -30,6 +38,12 @@ export class UnauthorizedError extends ApiError {
 export class ForbiddenError extends ApiError {
   constructor(message = "Forbidden") {
     super(403, message, "FORBIDDEN");
+  }
+}
+
+export class BadRequestError extends ApiError {
+  constructor(message = "Bad Request") {
+    super(400, message, "BAD_REQUEST");
   }
 }
 
