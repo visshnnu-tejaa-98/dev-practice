@@ -1,7 +1,17 @@
 import type { Request, Response } from "express";
 import ApiResponse from "../../common/utils/api-response";
-import { forgot, login, logout, register, verifyEmail } from "./auth.service";
-import { UnauthorizedError } from "../../common/utils/api-error";
+import {
+  forgot,
+  login,
+  logout,
+  register,
+  resetUserPassword,
+  verifyEmail,
+} from "./auth.service";
+import {
+  BadRequestError,
+  UnauthorizedError,
+} from "../../common/utils/api-error";
 
 const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -45,6 +55,13 @@ const forgotPassword = async (req: Request, res: Response) => {
   ApiResponse.success(res, "Email sent", { resetToken });
 };
 
+const resetPassword = async (req: Request, res: Response) => {
+  const { password } = req.body;
+  const { token } = req.query;
+  const user = await resetUserPassword({ password, token: token?.toString()! });
+  ApiResponse.success(res, "Password reset successfully", user);
+};
+
 export {
   registerUser,
   verifyUserEmail,
@@ -52,4 +69,5 @@ export {
   profile,
   logoutUser,
   forgotPassword,
+  resetPassword,
 };

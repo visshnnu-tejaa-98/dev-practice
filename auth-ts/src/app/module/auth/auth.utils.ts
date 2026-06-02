@@ -46,7 +46,7 @@ const getUserByEmailVerifyToken = async (token: string) => {
     .select()
     .from(usersTable)
     .where(eq(usersTable.verificationToken, token));
-  if (users.length === 0) throw new BadRequestError("111");
+  if (users.length === 0) throw new BadRequestError();
   const user = users[0];
   if (!user) throw new NotFoundError("User not found");
   return user;
@@ -94,15 +94,35 @@ const logoutUser = async () => {
   return true;
 };
 
-const updateUserWithResetToken = async (
-  refreshToken: string,
-  email: string,
-) => {
+const updateUserWithResetToken = async (resetToken: string, email: string) => {
   const users = await db
     .update(usersTable)
-    .set({ refreshToken })
+    .set({ resetToken })
     .where(eq(usersTable.email, email))
-    .returning({ id: usersTable.id, refreshToken: usersTable.refreshToken });
+    .returning({ id: usersTable.id, resetToken: usersTable.resetToken });
+  if (users.length === 0) throw new BadRequestError();
+  const user = users[0];
+  if (!user) throw new NotFoundError("User not found");
+  return user;
+};
+
+const getUserByResetToken = async (token: string) => {
+  const users = await db
+    .select()
+    .from(usersTable)
+    .where(eq(usersTable.resetToken, token));
+  if (users.length === 0) throw new BadRequestError();
+  const user = users[0];
+  if (!user) throw new NotFoundError("User not found");
+  return user;
+};
+
+const updateUserWithNewPassword = async (password: string, email: string) => {
+  const users = await db
+    .update(usersTable)
+    .set({ password })
+    .where(eq(usersTable.email, email))
+    .returning({ id: usersTable.id });
   if (users.length === 0) throw new BadRequestError();
   const user = users[0];
   if (!user) throw new NotFoundError("User not found");
@@ -117,4 +137,6 @@ export {
   updateUserWithRefreshToken,
   logoutUser,
   updateUserWithResetToken,
+  getUserByResetToken,
+  updateUserWithNewPassword,
 };

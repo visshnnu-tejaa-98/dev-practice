@@ -15,13 +15,16 @@ import {
   hash,
   hashToken,
   verifyEmailToken,
+  verifyResetToken,
 } from "../../common/utils/jwt";
 import {
   checkUserWithEmailExists,
   getUserByEmailVerifyToken,
+  getUserByResetToken,
   insertUser,
   logoutUser,
   updateUserAfterEmailVerification,
+  updateUserWithNewPassword,
   updateUserWithRefreshToken,
   updateUserWithResetToken,
 } from "./auth.utils";
@@ -66,7 +69,7 @@ const verifyEmail = async ({ token }: { token: string }) => {
   const decoded = verifyEmailToken(token) as JwtPayload;
 
   if (user.email !== decoded.email)
-    throw new BadRequestError("TOken Expired or Invalid token");
+    throw new BadRequestError("Token Expired or Invalid token");
   const updatedUser = await updateUserAfterEmailVerification(decoded.email);
 
   return updatedUser;
@@ -116,7 +119,6 @@ const forgot = async ({ email }: { email: string }) => {
 
   const resetToken = generateResetToken(user.id);
   const hashedResetToken = hashToken(resetToken);
-
   await updateUserWithResetToken(hashedResetToken, user.email);
 
   return {
@@ -124,4 +126,29 @@ const forgot = async ({ email }: { email: string }) => {
   };
 };
 
-export { register, verifyEmail, login, logout, forgot };
+const resetUserPassword = async ({
+  password,
+  token,
+}: {
+  password: string;
+  token: string;
+}) => {
+  const hashedToken = hashToken(token);
+  const user = await getUserByResetToken(hashedToken);
+  const decoded = verifyResetToken(token) as JwtPayload;
+
+  if (user.id !== decoded.id)
+    throw new BadRequestError("Token Expired or Invalid token");
+
+  const salt = await generateSalt(10);
+  const hashedPassword = await hash(password, salt);
+
+  const updatedUser = await updateUserWithNewPassword(
+    hashedPassword,
+    user.email,
+  );
+
+  return updatedUser;
+};
+
+export { register, verifyEmail, login, logout, forgot, resetUserPassword };
