@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import ApiResponse from "../../common/utils/api-response";
 import { login, register, verifyEmail } from "./auth.service";
+import { UnauthorizedError } from "../../common/utils/api-error";
 
 const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -25,4 +26,12 @@ const loginUser = async (req: Request, res: Response) => {
   });
 };
 
-export { registerUser, verifyUserEmail, loginUser };
+const profile = async (req: Request, res: Response) => {
+  if (!req.user || typeof req.user === "string") {
+    throw new UnauthorizedError("Invallid session content");
+  }
+  const { id } = req.user;
+  ApiResponse.success(res, "Fetched user details successfully", { id });
+};
+
+export { registerUser, verifyUserEmail, loginUser, profile };
