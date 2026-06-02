@@ -5,12 +5,14 @@ import heroImg from "./assets/hero.png";
 import "./App.css";
 import ChildrenExample from "./components/ChildrenExample";
 import CountdownTimer from "./components/CountdownTimer";
+import AbortControllerExample from "./components/AbortControllerExample";
 
 function App() {
   return (
     <>
-      <ChildrenExample />
-      <CountdownTimer />
+      {/* <ChildrenExample />
+      <CountdownTimer /> */}
+      <AbortControllerExample />
     </>
   );
 }
