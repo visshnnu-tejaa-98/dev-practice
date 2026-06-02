@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import ApiResponse from "../../common/utils/api-response";
-import { register, verifyEmail } from "./auth.service";
+import { login, register, verifyEmail } from "./auth.service";
 
 const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
@@ -14,4 +14,15 @@ const verifyUserEmail = async (req: Request, res: Response) => {
   ApiResponse.created(res, "User Email Verified Successfully", user);
 };
 
-export { registerUser, verifyUserEmail };
+const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  const { id: userId, accessToken } = await login({ email, password });
+
+  ApiResponse.created(res, "User loggedin successfully", {
+    accessToken,
+    id: userId,
+  });
+};
+
+export { registerUser, verifyUserEmail, loginUser };

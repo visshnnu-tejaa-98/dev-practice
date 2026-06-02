@@ -13,7 +13,18 @@ const envSchema = z.object({
   JWT_VERIFY_TOKEN_EXPIRES: z
     .string()
     .min(1, "JWT_VERIFY_TOKEN_EXPIRES is required"),
-
+  JWT_ACCESS_TOKEN_SECRET: z
+    .string()
+    .min(1, "JWT_ACCESS_TOKEN_SECRET is required"),
+  JWT_ACCESS_TOKEN_EXPIRES: z
+    .string()
+    .min(1, "JWT_ACCESS_TOKEN_EXPIRESs is required"),
+  JWT_REFRESH_TOKEN_SECRET: z
+    .string()
+    .min(1, "JWT_REFRESH_TOKEN_SECRET is required"),
+  JWT_REFRESH_TOKEN_EXPIRES: z
+    .string()
+    .min(1, "JWT_REFRESH_TOKEN_EXPIRES is required"),
   NODEMAILER_SMTP_HOST: z.string(),
   NODEMAILER_PORT: z.string(),
   NODEMAILER_EMAIL_USER: z.string().email(),
