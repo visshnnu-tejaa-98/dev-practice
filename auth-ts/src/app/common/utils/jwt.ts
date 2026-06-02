@@ -3,7 +3,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import { NotFoundError } from "./api-error";
 import { env } from "../zod/env";
 import { StringValue } from "ms";
-import crypto, { createHash } from "node:crypto";
+import { createHash } from "node:crypto";
 
 const generateSalt = async (rounds: number) => {
   return await bcrypt.genSalt(rounds);
@@ -41,10 +41,62 @@ const verifyEmailToken = (token: string) => {
   return jwt.verify(token, secret);
 };
 
+const generateAccessToken = (id: string) => {
+  const payload = { id };
+  const secret = env.JWT_ACCESS_TOKEN_SECRET;
+  const expiresIn = env.JWT_ACCESS_TOKEN_EXPIRES || "15m";
+  if (!secret)
+    throw new NotFoundError(
+      "Error While generating access token - JWT_SECRET_NOTFOUND",
+    );
+
+  if (!expiresIn)
+    throw new NotFoundError(
+      "Error While generating access expiry token - JWT_SECRET_NOTFOUND",
+    );
+  const options: SignOptions = {
+    expiresIn: expiresIn as StringValue,
+  };
+  return jwt.sign(payload, secret, options);
+};
+
+const verifyAccessToken = (token: string) => {
+  const secret = env.JWT_ACCESS_TOKEN_SECRET;
+  return jwt.verify(token, secret);
+};
+
+const generateRefeshToken = (id: string) => {
+  const payload = { id };
+  const secret = env.JWT_REFRESH_TOKEN_SECRET;
+  const expiresIn = env.JWT_REFRESH_TOKEN_EXPIRES || "15m";
+  if (!secret)
+    throw new NotFoundError(
+      "Error While generating access token - JWT_SECRET_NOTFOUND",
+    );
+
+  if (!expiresIn)
+    throw new NotFoundError(
+      "Error While generating access expiry token - JWT_SECRET_NOTFOUND",
+    );
+  const options: SignOptions = {
+    expiresIn: expiresIn as StringValue,
+  };
+  return jwt.sign(payload, secret, options);
+};
+
+const verifyRefreshToken = (token: string) => {
+  const secret = env.JWT_REFRESH_TOKEN_SECRET;
+  return jwt.verify(token, secret);
+};
+
 export {
   generateSalt,
   hash,
   hashToken,
   generateVerifyEmailToken,
   verifyEmailToken,
+  generateAccessToken,
+  verifyAccessToken,
+  generateRefeshToken,
+  verifyRefreshToken,
 };

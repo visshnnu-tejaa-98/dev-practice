@@ -1,7 +1,13 @@
 import { JwtPayload } from "jsonwebtoken";
-import { sendVerificationEmail } from "../../common/config/nodemailer";
-import { BadRequestError, ConflictError } from "../../common/utils/api-error";
+import bcrypt from "bcryptjs";
 import {
+  BadRequestError,
+  ConflictError,
+  UnauthorizedError,
+} from "../../common/utils/api-error";
+import {
+  generateAccessToken,
+  generateRefeshToken,
   generateSalt,
   generateVerifyEmailToken,
   hash,
@@ -13,6 +19,7 @@ import {
   getUserByEmailVerifyToken,
   insertUser,
   updateUserAfterEmailVerification,
+  updateUserWithRefreshToken,
 } from "./auth.utils";
 
 const register = async ({
@@ -61,4 +68,35 @@ const verifyEmail = async ({ token }: { token: string }) => {
   return updatedUser;
 };
 
-export { register, verifyEmail };
+const login = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  const user = await checkUserWithEmailExists(email);
+
+  if (!user) throw new UnauthorizedError("Invalid email or password");
+
+  const result =
+    user.password && (await bcrypt.compare(password, user.password));
+
+  if (!result) throw new UnauthorizedError("Invalid email or password");
+
+  const accessToken = generateAccessToken(user.id);
+  const refreshToken = generateRefeshToken(user.id);
+  const hashedRefreshToken = hashToken(refreshToken);
+
+  const updatedUser = await updateUserWithRefreshToken(
+    hashedRefreshToken,
+    email,
+  );
+
+  return {
+    id: updatedUser.id,
+    accessToken,
+  };
+};
+
+export { register, verifyEmail, login };

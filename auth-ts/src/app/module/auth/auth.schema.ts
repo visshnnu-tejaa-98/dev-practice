@@ -27,5 +27,17 @@ const verifyEmailSchema = z.object({
 
 type VerificationEmailSchemaType = z.infer<typeof verifyEmailSchema>;
 
-export { registerSchema, verifyEmailSchema };
-export type { RegisterInputType, VerificationEmailSchemaType };
+const loginSchema = z.object({
+  email: z.string().email().lowercase().describe("Email of the registrant"),
+  password: z
+    .string()
+    .trim()
+    .min(8)
+    .max(100)
+    .describe("Password of the regsitrant"),
+});
+
+type LoginSchemaType = z.infer<typeof loginSchema>;
+
+export { registerSchema, verifyEmailSchema, loginSchema };
+export type { RegisterInputType, VerificationEmailSchemaType, LoginSchemaType };
