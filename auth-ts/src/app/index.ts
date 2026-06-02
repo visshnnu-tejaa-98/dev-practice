@@ -3,12 +3,14 @@ import ApiResponse from "./common/utils/api-response";
 import { NotFoundError } from "./common/utils/api-error";
 import { errorMiddleWare } from "./common/utils/error.middleware";
 import AuthRouter from "./module/auth/auth.route";
+import { authenticate } from "./module/auth/auth.middleware";
 
 const createExpressApp = () => {
   const app = express();
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(authenticate());
 
   app.get("/health", (req, res) => {
     return ApiResponse.success(res, "API is healthy");
