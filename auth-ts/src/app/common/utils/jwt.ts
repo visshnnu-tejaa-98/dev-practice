@@ -109,7 +109,7 @@ const generateResetToken = (id: string) => {
 };
 
 const verifyResetToken = (token: string) => {
-  const secret = env.JWT_RESET_TOKEN_EXPIRES;
+  const secret = env.JWT_RESET_TOKEN_SECRET;
   return jwt.verify(token, secret);
 };
 

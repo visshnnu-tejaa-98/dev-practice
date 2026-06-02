@@ -45,10 +45,40 @@ const forgotPasswordSchema = z.object({
 
 type ForgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>;
 
-export { registerSchema, verifyEmailSchema, loginSchema, forgotPasswordSchema };
+const resetPasswordSchemaFromBody = z.object({
+  password: z
+    .string()
+    .trim()
+    .min(8)
+    .max(100)
+    .describe("Password of the regsitrant"),
+});
+
+type ResetPasswordSchemaFromBodyType = z.infer<
+  typeof resetPasswordSchemaFromBody
+>;
+
+const resetPasswordSchemaFromParams = z.object({
+  token: z.string().trim().describe("Reset Password token of the registrant"),
+});
+
+type ResetPasswordSchemaFromParamsType = z.infer<
+  typeof resetPasswordSchemaFromParams
+>;
+
+export {
+  registerSchema,
+  verifyEmailSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  resetPasswordSchemaFromBody,
+  resetPasswordSchemaFromParams,
+};
 export type {
   RegisterInputType,
   VerificationEmailSchemaType,
   LoginSchemaType,
   ForgotPasswordSchemaType,
+  ResetPasswordSchemaFromBodyType,
+  ResetPasswordSchemaFromParamsType,
 };
