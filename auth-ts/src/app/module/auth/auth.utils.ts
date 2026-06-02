@@ -85,10 +85,20 @@ const updateUserWithRefreshToken = async (
   return user;
 };
 
+const logoutUser = async () => {
+  try {
+    await db.update(usersTable).set({ refreshToken: null });
+  } catch (err) {
+    throw new BadRequestError("Failed to logout the user");
+  }
+  return true;
+};
+
 export {
   checkUserWithEmailExists,
   insertUser,
   getUserByEmailVerifyToken,
   updateUserAfterEmailVerification,
   updateUserWithRefreshToken,
+  logoutUser,
 };

@@ -18,7 +18,6 @@ class ApiError extends Error {
 
 export class ValidationError extends ApiError {
   constructor(details?: any) {
-    console.log(111, details);
     super(400, "Validation Error", "VALIDATION_ERROR", details);
   }
 }

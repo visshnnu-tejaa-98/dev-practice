@@ -1,6 +1,7 @@
 import express from "express";
 import {
   loginUser,
+  logoutUser,
   profile,
   registerUser,
   verifyUserEmail,
@@ -15,5 +16,6 @@ router.post("/register", validate(registerSchema), registerUser);
 router.post("/verify", validate(verifyEmailSchema), verifyUserEmail);
 router.post("/login", validate(loginSchema), loginUser);
 router.get("/profile", restrictToAuthenticatedUser(), profile);
+router.post("/logout", restrictToAuthenticatedUser(), logoutUser);
 
 export default router;
