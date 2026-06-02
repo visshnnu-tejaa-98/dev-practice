@@ -39,5 +39,16 @@ const loginSchema = z.object({
 
 type LoginSchemaType = z.infer<typeof loginSchema>;
 
-export { registerSchema, verifyEmailSchema, loginSchema };
-export type { RegisterInputType, VerificationEmailSchemaType, LoginSchemaType };
+const forgotPasswordSchema = z.object({
+  email: z.string().email().lowercase().describe("Email of the registrant"),
+});
+
+type ForgotPasswordSchemaType = z.infer<typeof forgotPasswordSchema>;
+
+export { registerSchema, verifyEmailSchema, loginSchema, forgotPasswordSchema };
+export type {
+  RegisterInputType,
+  VerificationEmailSchemaType,
+  LoginSchemaType,
+  ForgotPasswordSchemaType,
+};

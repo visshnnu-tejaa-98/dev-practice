@@ -3,11 +3,13 @@ import bcrypt from "bcryptjs";
 import {
   BadRequestError,
   ConflictError,
+  NotFoundError,
   UnauthorizedError,
 } from "../../common/utils/api-error";
 import {
   generateAccessToken,
   generateRefeshToken,
+  generateResetToken,
   generateSalt,
   generateVerifyEmailToken,
   hash,
@@ -21,6 +23,7 @@ import {
   logoutUser,
   updateUserAfterEmailVerification,
   updateUserWithRefreshToken,
+  updateUserWithResetToken,
 } from "./auth.utils";
 
 const register = async ({
@@ -105,4 +108,20 @@ const logout = async () => {
   return status;
 };
 
-export { register, verifyEmail, login, logout };
+const forgot = async ({ email }: { email: string }) => {
+  const user = await checkUserWithEmailExists(email);
+
+  if (!user)
+    throw new NotFoundError(`User with given email ${email} not found`);
+
+  const resetToken = generateResetToken(user.id);
+  const hashedResetToken = hashToken(resetToken);
+
+  await updateUserWithResetToken(hashedResetToken, user.email);
+
+  return {
+    resetToken,
+  };
+};
+
+export { register, verifyEmail, login, logout, forgot };

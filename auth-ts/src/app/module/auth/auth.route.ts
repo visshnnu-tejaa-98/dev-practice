@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  forgotPassword,
   loginUser,
   logoutUser,
   profile,
@@ -7,7 +8,12 @@ import {
   verifyUserEmail,
 } from "./auth.controller";
 import { validate } from "../../common/zod/zod.midleware";
-import { loginSchema, registerSchema, verifyEmailSchema } from "./auth.schema";
+import {
+  forgotPasswordSchema,
+  loginSchema,
+  registerSchema,
+  verifyEmailSchema,
+} from "./auth.schema";
 import { restrictToAuthenticatedUser } from "./auth.middleware";
 
 const router = express.Router();
@@ -17,5 +23,6 @@ router.post("/verify", validate(verifyEmailSchema), verifyUserEmail);
 router.post("/login", validate(loginSchema), loginUser);
 router.get("/profile", restrictToAuthenticatedUser(), profile);
 router.post("/logout", restrictToAuthenticatedUser(), logoutUser);
+router.post("/forgot-password", validate(forgotPasswordSchema), forgotPassword);
 
 export default router;
