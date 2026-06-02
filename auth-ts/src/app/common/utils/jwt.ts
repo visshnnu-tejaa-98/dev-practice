@@ -89,6 +89,30 @@ const verifyRefreshToken = (token: string) => {
   return jwt.verify(token, secret);
 };
 
+const generateResetToken = (id: string) => {
+  const payload = { id };
+  const secret = env.JWT_RESET_TOKEN_SECRET;
+  const expiresIn = env.JWT_RESET_TOKEN_EXPIRES || "15m";
+  if (!secret)
+    throw new NotFoundError(
+      "Error While generating access token - JWT_SECRET_NOTFOUND",
+    );
+
+  if (!expiresIn)
+    throw new NotFoundError(
+      "Error While generating access expiry token - JWT_SECRET_NOTFOUND",
+    );
+  const options: SignOptions = {
+    expiresIn: expiresIn as StringValue,
+  };
+  return jwt.sign(payload, secret, options);
+};
+
+const verifyResetToken = (token: string) => {
+  const secret = env.JWT_RESET_TOKEN_EXPIRES;
+  return jwt.verify(token, secret);
+};
+
 export {
   generateSalt,
   hash,
@@ -99,4 +123,6 @@ export {
   verifyAccessToken,
   generateRefeshToken,
   verifyRefreshToken,
+  generateResetToken,
+  verifyResetToken,
 };

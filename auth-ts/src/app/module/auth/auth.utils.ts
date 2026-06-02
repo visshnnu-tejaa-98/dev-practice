@@ -94,6 +94,21 @@ const logoutUser = async () => {
   return true;
 };
 
+const updateUserWithResetToken = async (
+  refreshToken: string,
+  email: string,
+) => {
+  const users = await db
+    .update(usersTable)
+    .set({ refreshToken })
+    .where(eq(usersTable.email, email))
+    .returning({ id: usersTable.id, refreshToken: usersTable.refreshToken });
+  if (users.length === 0) throw new BadRequestError();
+  const user = users[0];
+  if (!user) throw new NotFoundError("User not found");
+  return user;
+};
+
 export {
   checkUserWithEmailExists,
   insertUser,
@@ -101,4 +116,5 @@ export {
   updateUserAfterEmailVerification,
   updateUserWithRefreshToken,
   logoutUser,
+  updateUserWithResetToken,
 };
