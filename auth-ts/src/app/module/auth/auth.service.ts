@@ -18,6 +18,7 @@ import {
   checkUserWithEmailExists,
   getUserByEmailVerifyToken,
   insertUser,
+  logoutUser,
   updateUserAfterEmailVerification,
   updateUserWithRefreshToken,
 } from "./auth.utils";
@@ -99,4 +100,9 @@ const login = async ({
   };
 };
 
-export { register, verifyEmail, login };
+const logout = async () => {
+  const status = await logoutUser();
+  return status;
+};
+
+export { register, verifyEmail, login, logout };

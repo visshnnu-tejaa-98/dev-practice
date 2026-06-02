@@ -27,7 +27,6 @@ const authenticate = () => {
       throw new UnauthorizedError("Invalid or expired token");
     }
     req.user = userId;
-    console.log(req.user);
     next();
   };
 };
