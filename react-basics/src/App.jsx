@@ -6,13 +6,15 @@ import "./App.css";
 import ChildrenExample from "./components/ChildrenExample";
 import CountdownTimer from "./components/CountdownTimer";
 import AbortControllerExample from "./components/AbortControllerExample";
+import { FormExample } from "./components/FormExample";
 
 function App() {
   return (
     <>
       {/* <ChildrenExample />
       <CountdownTimer /> */}
-      <AbortControllerExample />
+      {/* <AbortControllerExample /> */}
+      <FormExample />
     </>
   );
 }
