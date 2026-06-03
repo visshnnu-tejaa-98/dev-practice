@@ -3,7 +3,7 @@ import { ManualForm } from "./ManualForm";
 import { HookForm } from "./HookForm";
 
 export const FormExample = () => {
-  const [tab, setTab] = useState(true);
+  const [tab, setTab] = useState(false);
 
   return (
     <div>
