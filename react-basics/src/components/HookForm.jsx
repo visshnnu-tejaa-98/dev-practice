@@ -1,3 +1,41 @@
+import { useForm } from "react-hook-form";
 export const HookForm = () => {
-  return <div>Hook Form</div>;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm({});
+
+  const submit = (data) => {
+    console.log(data);
+  };
+  return (
+    <div>
+      <form onSubmit={handleSubmit(submit)}>
+        <label htmlFor="">
+          Name:
+          <input
+            type="name"
+            {...register("name", { required: "Name is required" })}
+          />
+        </label>
+        {errors.name && <p>{errors.name.message}</p>}
+        <br />
+        <br />
+        <label htmlFor="">
+          Email:
+          <input
+            type="email"
+            {...register("email", { required: "Email is required" })}
+          />
+        </label>
+        {errors.email && <p>{errors.email.message}</p>}
+
+        <br />
+        <br />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
 };
