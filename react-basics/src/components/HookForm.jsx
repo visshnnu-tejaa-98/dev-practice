@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import Example1 from "./react-hook-form/Example1";
 export const HookForm = () => {
   const {
     register,
@@ -12,7 +13,8 @@ export const HookForm = () => {
   };
   return (
     <div>
-      <form onSubmit={handleSubmit(submit)}>
+      <Example1 />
+      {/* <form onSubmit={handleSubmit(submit)}>
         <label htmlFor="">
           Name:
           <input
@@ -35,7 +37,7 @@ export const HookForm = () => {
         <br />
         <br />
         <button type="submit">Submit</button>
-      </form>
+      </form> */}
     </div>
   );
 };
