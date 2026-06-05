@@ -4,6 +4,7 @@ import { NotFoundError } from "./common/utils/api-error";
 import { errorMiddleWare } from "./common/utils/error.middleware";
 import AuthRouter from "./module/auth/auth.route";
 import { authenticate } from "./module/auth/auth.middleware";
+import { getServiceDiscoveryEndpoints } from "./module/oidc/oidc.controller";
 
 const createExpressApp = () => {
   const app = express();
@@ -17,6 +18,8 @@ const createExpressApp = () => {
   });
 
   app.use("/api/auth", AuthRouter);
+
+  app.get("/.well-known/openid-configuration", getServiceDiscoveryEndpoints);
 
   app.use((req, res, next) => {
     next(new NotFoundError(`Route ${req.originalUrl} not found`));
