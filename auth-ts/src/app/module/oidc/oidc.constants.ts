@@ -1,10 +1,10 @@
 import { env } from "../../common/zod/env";
 
 const ISSUER = env.BASE_URL;
-const AUTHORIZATION_ENDPOINT = `${env.BASE_URL}/authorize`;
-const TOKEN_ENDPOINT = `${env.BASE_URL}/token`;
-const USERINFO_ENDPOINT = `${env.BASE_URL}/userinfo`;
-const JWKS_URI = `${env.BASE_URL}/ jwks.json`;
+const AUTHORIZATION_ENDPOINT = `${env.BASE_URL}/o/authorize`;
+const TOKEN_ENDPOINT = `${env.BASE_URL}/o/token`;
+const USERINFO_ENDPOINT = `${env.BASE_URL}/o/userinfo`;
+const JWKS_URI = `${env.BASE_URL}/o/jwks.json`;
 
 export const SERVICE_DISCOVERY_ENDPOINTS = {
   issuer: ISSUER,

@@ -1,9 +1,16 @@
 import type { Request, Response } from "express";
+import jose from "node-jose";
 
 import { SERVICE_DISCOVERY_ENDPOINTS } from "./oidc.constants";
+import { PUBLIC_KEY } from "../../common/utils/certs";
 
 const getServiceDiscoveryEndpoints = (req: Request, res: Response) => {
   res.json(SERVICE_DISCOVERY_ENDPOINTS);
 };
 
-export { getServiceDiscoveryEndpoints };
+const getKeys = async (req: Request, res: Response) => {
+  const keys = await jose.JWK.asKey(PUBLIC_KEY, "pem");
+  res.json({ keys: [keys.toJSON()] });
+};
+
+export { getServiceDiscoveryEndpoints, getKeys };
