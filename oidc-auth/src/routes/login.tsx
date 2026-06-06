@@ -1,3 +1,4 @@
+import { LoginForm } from '#/components/login-form'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/login')({
@@ -5,5 +6,11 @@ export const Route = createFileRoute('/login')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/login"!</div>
+  return (
+    <div className="flex min-h-screen items-center justify-center p-6">
+      <div className="w-full max-w-sm">
+        <LoginForm />
+      </div>
+    </div>
+  )
 }
