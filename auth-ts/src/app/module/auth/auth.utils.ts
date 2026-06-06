@@ -129,6 +129,21 @@ const updateUserWithNewPassword = async (password: string, email: string) => {
   return user;
 };
 
+const getUserDetailsByUserId = async (id: string) => {
+  const users = await db
+    .select({
+      id: usersTable.id,
+      name: usersTable.name,
+      email: usersTable.email,
+    })
+    .from(usersTable)
+    .where(eq(usersTable.id, id));
+  if (users.length === 0) throw new BadRequestError();
+  const user = users[0];
+  if (!user) throw new NotFoundError("User not found");
+  return user;
+};
+
 export {
   checkUserWithEmailExists,
   insertUser,
@@ -139,4 +154,5 @@ export {
   updateUserWithResetToken,
   getUserByResetToken,
   updateUserWithNewPassword,
+  getUserDetailsByUserId,
 };

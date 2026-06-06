@@ -3,7 +3,7 @@ import {
   forgotPassword,
   loginUser,
   logoutUser,
-  profile,
+  getUserProfile,
   registerUser,
   verifyUserEmail,
   resetPassword,
@@ -24,7 +24,7 @@ const router = express.Router();
 router.post("/register", validate(registerSchema), registerUser);
 router.post("/verify", validate(verifyEmailSchema), verifyUserEmail);
 router.post("/login", validate(loginSchema), loginUser);
-router.get("/profile", restrictToAuthenticatedUser(), profile);
+router.get("/profile", restrictToAuthenticatedUser(), getUserProfile);
 router.post("/logout", restrictToAuthenticatedUser(), logoutUser);
 router.post("/forgot-password", validate(forgotPasswordSchema), forgotPassword);
 router.post(

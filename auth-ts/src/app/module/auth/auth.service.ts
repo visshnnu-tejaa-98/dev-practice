@@ -21,6 +21,7 @@ import {
   checkUserWithEmailExists,
   getUserByEmailVerifyToken,
   getUserByResetToken,
+  getUserDetailsByUserId,
   insertUser,
   logoutUser,
   updateUserAfterEmailVerification,
@@ -121,6 +122,11 @@ const logout = async () => {
   return status;
 };
 
+const profile = async (id: string) => {
+  const user = await getUserDetailsByUserId(id);
+  return user;
+};
+
 const forgot = async ({ email }: { email: string }) => {
   const user = await checkUserWithEmailExists(email);
 
@@ -161,4 +167,12 @@ const resetUserPassword = async ({
   return updatedUser;
 };
 
-export { register, verifyEmail, login, logout, forgot, resetUserPassword };
+export {
+  register,
+  verifyEmail,
+  login,
+  logout,
+  profile,
+  forgot,
+  resetUserPassword,
+};

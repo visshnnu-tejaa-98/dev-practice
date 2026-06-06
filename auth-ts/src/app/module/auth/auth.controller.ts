@@ -4,6 +4,7 @@ import {
   forgot,
   login,
   logout,
+  profile,
   register,
   resetUserPassword,
   verifyEmail,
@@ -36,12 +37,15 @@ const loginUser = async (req: Request, res: Response) => {
   });
 };
 
-const profile = async (req: Request, res: Response) => {
+const getUserProfile = async (req: Request, res: Response) => {
   if (!req.user || typeof req.user === "string") {
     throw new UnauthorizedError("Invallid session content");
   }
   const { id } = req.user;
-  ApiResponse.success(res, "Fetched user details successfully", { id });
+  const userDetails = await profile(id);
+  ApiResponse.success(res, "Fetched user details successfully", {
+    user: userDetails,
+  });
 };
 
 const logoutUser = async (req: Request, res: Response) => {
@@ -70,4 +74,5 @@ export {
   logoutUser,
   forgotPassword,
   resetPassword,
+  getUserProfile,
 };
