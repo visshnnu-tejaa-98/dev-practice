@@ -3,10 +3,14 @@ import { JwtPayload } from "jsonwebtoken";
 import { UnauthorizedError } from "../../common/utils/api-error";
 import { verifyAccessToken } from "../../common/utils/jwt";
 
+interface AuthUser {
+  id: string;
+  role: string;
+}
 declare global {
   namespace Express {
     interface Request {
-      user?: string | JwtPayload;
+      user?: AuthUser | JwtPayload;
     }
   }
 }
@@ -22,11 +26,14 @@ const authenticate = () => {
     if (!token) {
       throw new UnauthorizedError("Token not provided");
     }
-    const userId = verifyAccessToken(token);
-    if (!userId) {
+    const user = verifyAccessToken(token);
+    if (!user) {
       throw new UnauthorizedError("Invalid or expired token");
     }
-    req.user = userId;
+    req.user = {
+      id: user.id,
+      role: user.role,
+    };
     next();
   };
 };
@@ -38,4 +45,17 @@ const restrictToAuthenticatedUser = () => {
   };
 };
 
-export { authenticate, restrictToAuthenticatedUser };
+const adminOnly = () => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      throw new UnauthorizedError("Authentication Required");
+    }
+
+    if (req.user.role !== "admin") {
+      throw new UnauthorizedError("Admin access required");
+    }
+    next();
+  };
+};
+
+export { authenticate, restrictToAuthenticatedUser, adminOnly };

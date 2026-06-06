@@ -17,7 +17,7 @@ import {
   resetPasswordSchemaFromParams,
   verifyEmailSchema,
 } from "./auth.schema";
-import { restrictToAuthenticatedUser } from "./auth.middleware";
+import { adminOnly, restrictToAuthenticatedUser } from "./auth.middleware";
 
 const router = express.Router();
 
@@ -33,5 +33,8 @@ router.post(
   validate(resetPasswordSchemaFromParams, "query"),
   resetPassword,
 );
+router.get("/admin", restrictToAuthenticatedUser(), adminOnly(), (req, res) => {
+  res.json({ message: "This is admin only route" });
+});
 
 export default router;

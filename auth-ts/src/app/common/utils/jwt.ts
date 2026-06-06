@@ -5,6 +5,11 @@ import { env } from "../zod/env";
 import { StringValue } from "ms";
 import { createHash } from "node:crypto";
 
+type AccessTokenPayload = {
+  id: string;
+  role: string;
+};
+
 const generateSalt = async (rounds: number) => {
   return await bcrypt.genSalt(rounds);
 };
@@ -66,9 +71,9 @@ const generateAccessToken = ({ id, role }: { id: string; role: string }) => {
   return jwt.sign(payload, secret, options);
 };
 
-const verifyAccessToken = (token: string) => {
+const verifyAccessToken = (token: string): AccessTokenPayload => {
   const secret = env.JWT_ACCESS_TOKEN_SECRET;
-  return jwt.verify(token, secret);
+  return jwt.verify(token, secret) as AccessTokenPayload;
 };
 
 const generateRefeshToken = ({ id, role }: { id: string; role: string }) => {

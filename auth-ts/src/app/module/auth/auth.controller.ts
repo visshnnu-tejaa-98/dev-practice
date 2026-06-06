@@ -39,7 +39,7 @@ const loginUser = async (req: Request, res: Response) => {
 
 const getUserProfile = async (req: Request, res: Response) => {
   if (!req.user || typeof req.user === "string") {
-    throw new UnauthorizedError("Invallid session content");
+    throw new UnauthorizedError("Invalid session content");
   }
   const { id } = req.user;
   const userDetails = await profile(id);
