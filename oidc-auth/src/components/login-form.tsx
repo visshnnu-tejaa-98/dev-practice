@@ -17,12 +17,23 @@ import { Input } from '@/components/ui/input'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import type { LoginUserType } from '#/types'
 import { authService } from '#/services/authService'
+import { Link } from '@tanstack/react-router'
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<'div'>) {
-  const { register, handleSubmit } = useForm<LoginUserType>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginUserType>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    mode: 'onSubmit',
+  })
   const userLogin: SubmitHandler<LoginUserType> = async ({
     email,
     password,
@@ -50,33 +61,51 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="Your Email"
-                  {...register('email')}
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Invalid email address',
+                    },
+                  })}
                 />
+                {errors.email && (
+                  <p className="text-red-400">{errors.email.message}</p>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
+                  <Link
+                    to="/login"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input
                   id="password"
                   type="password"
                   placeholder="Password"
-                  {...register('password')}
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 8,
+                      message: 'Passowrd should be min of 6 characters',
+                    },
+                  })}
                 />
+                {errors.password && (
+                  <p className="text-red-400">{errors.password.message}</p>
+                )}
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
-                <Button variant="outline" type="button">
+                {/* <Button variant="outline" type="button">
                   Login with Google
-                </Button>
+                </Button> */}
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
+                  Don&apos;t have an account? <Link to="/signup">Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
