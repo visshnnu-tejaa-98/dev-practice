@@ -1,26 +1,39 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card'
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { useForm, type SubmitHandler } from 'react-hook-form'
+import type { LoginUserType } from '#/types'
+import { authService } from '#/services/authService'
 
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<'div'>) {
+  const { register, handleSubmit } = useForm<LoginUserType>()
+  const userLogin: SubmitHandler<LoginUserType> = async ({
+    email,
+    password,
+  }: LoginUserType) => {
+    console.log(email, password)
+    const data = await authService.login({ email, password })
+    console.log(data)
+  }
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
@@ -29,15 +42,15 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(userLogin)}>
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
-                  required
+                  placeholder="Your Email"
+                  {...register('email')}
                 />
               </Field>
               <Field>
@@ -50,7 +63,12 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  {...register('password')}
+                />
               </Field>
               <Field>
                 <Button type="submit">Login</Button>
