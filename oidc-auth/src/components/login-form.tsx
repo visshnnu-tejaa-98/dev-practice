@@ -38,9 +38,12 @@ export function LoginForm({
     email,
     password,
   }: LoginUserType) => {
-    console.log(email, password)
-    const data = await authService.login({ email, password })
-    console.log(data)
+    try {
+      await authService.login({ email, password })
+      console.log('User Loggedin Succesfully')
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (

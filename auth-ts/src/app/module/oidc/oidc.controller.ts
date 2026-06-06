@@ -14,7 +14,7 @@ const getKeys = async (req: Request, res: Response) => {
 };
 
 const authorize = (req: Request, res: Response) => {
-  res.redirect("http://localhost:5173/login");
+  res.redirect("http://localhost:3000/signup");
 };
 
 export { getServiceDiscoveryEndpoints, getKeys, authorize };

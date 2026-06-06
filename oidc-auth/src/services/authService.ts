@@ -1,11 +1,21 @@
-import type { LoginUserType } from '#/types'
+import type { LoginUserType, RegisterUserType } from '#/types'
 import { api } from './api'
 import { tokenStore } from './tokenStore'
 
 export const authService = {
+  async register({ name, email, password }: RegisterUserType) {
+    const { data } = await api.post('/api/auth/register', {
+      name,
+      email,
+      password,
+    })
+    tokenStore.set(data.data)
+    return data
+  },
   async login({ email, password }: LoginUserType) {
     const { data } = await api.post('/api/auth/login', { email, password })
-    tokenStore.set(data)
+
+    tokenStore.set(data.data)
     return data
   },
 }

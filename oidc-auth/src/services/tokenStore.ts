@@ -5,7 +5,7 @@ const USER_KEY = 'user'
 type ToKenType = {
   accessToken: string
   refreshToken: string
-  user: string
+  id: string
 }
 
 export const tokenStore = {
@@ -13,10 +13,10 @@ export const tokenStore = {
   getRefresh: () => localStorage.getItem(REFRESH_KEY),
   getUser: () => localStorage.getItem(USER_KEY),
 
-  set: ({ accessToken, refreshToken, user }: ToKenType) => {
+  set: ({ accessToken, refreshToken, id }: ToKenType) => {
     if (accessToken) localStorage.setItem(ACCESS_KEY, accessToken)
     if (refreshToken) localStorage.setItem(REFRESH_KEY, refreshToken)
-    if (user) localStorage.setItem(USER_KEY, user)
+    if (id) localStorage.setItem(USER_KEY, id)
   },
 
   clear: () => {

@@ -58,9 +58,18 @@ const register = async ({
     verificationToken: hashedVerificationToken,
   });
 
+  const accessToken = generateAccessToken(userId?.id!);
+  const refreshToken = generateRefeshToken(userId?.id!);
+  const hashedRefreshToken = hashToken(refreshToken);
+
+  const updatedUser = await updateUserWithRefreshToken(
+    hashedRefreshToken,
+    email,
+  );
+
   // await sendVerificationEmail(email, verificationToken);
 
-  return { id: userId?.id, verificationToken: verificationToken };
+  return { id: userId?.id, accessToken };
 };
 
 const verifyEmail = async ({ token }: { token: string }) => {
