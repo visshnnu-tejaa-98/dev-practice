@@ -17,8 +17,14 @@ const hashToken = (token: string) => {
   return createHash("sha256").update(token).digest("hex");
 };
 
-const generateVerifyEmailToken = (email: string) => {
-  const payload = { email: email };
+const generateVerifyEmailToken = ({
+  email,
+  role,
+}: {
+  email: string;
+  role: string;
+}) => {
+  const payload = { email, role };
   const secret = env.JWT_VERIFY_TOKEN_SECRET;
   const expiresIn = env.JWT_VERIFY_TOKEN_EXPIRES || "5m";
   if (!secret)
@@ -41,8 +47,8 @@ const verifyEmailToken = (token: string) => {
   return jwt.verify(token, secret);
 };
 
-const generateAccessToken = (id: string) => {
-  const payload = { id };
+const generateAccessToken = ({ id, role }: { id: string; role: string }) => {
+  const payload = { id, role };
   const secret = env.JWT_ACCESS_TOKEN_SECRET;
   const expiresIn = env.JWT_ACCESS_TOKEN_EXPIRES || "15m";
   if (!secret)
@@ -65,8 +71,8 @@ const verifyAccessToken = (token: string) => {
   return jwt.verify(token, secret);
 };
 
-const generateRefeshToken = (id: string) => {
-  const payload = { id };
+const generateRefeshToken = ({ id, role }: { id: string; role: string }) => {
+  const payload = { id, role };
   const secret = env.JWT_REFRESH_TOKEN_SECRET;
   const expiresIn = env.JWT_REFRESH_TOKEN_EXPIRES || "15m";
   if (!secret)
@@ -89,8 +95,8 @@ const verifyRefreshToken = (token: string) => {
   return jwt.verify(token, secret);
 };
 
-const generateResetToken = (id: string) => {
-  const payload = { id };
+const generateResetToken = ({ id, role }: { id: string; role: string }) => {
+  const payload = { id, role };
   const secret = env.JWT_RESET_TOKEN_SECRET;
   const expiresIn = env.JWT_RESET_TOKEN_EXPIRES || "15m";
   if (!secret)

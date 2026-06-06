@@ -1,4 +1,5 @@
 import z from "zod";
+import { ALLOWED_ROLES, USER } from "../../common/constants";
 
 const registerSchema = z.object({
   name: z
@@ -14,6 +15,7 @@ const registerSchema = z.object({
     .min(8)
     .max(100)
     .describe("Password of the regsitrant"),
+  role: z.enum(ALLOWED_ROLES).default(USER),
 });
 
 type RegisterInputType = z.infer<typeof registerSchema>;

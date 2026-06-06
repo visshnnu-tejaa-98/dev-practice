@@ -28,6 +28,7 @@ import {
   updateUserWithRefreshToken,
   updateUserWithResetToken,
 } from "./auth.utils";
+import { USER } from "../../common/constants";
 
 const register = async ({
   name,
@@ -48,7 +49,7 @@ const register = async ({
   const salt = await generateSalt(10);
   const hashedPassword = await hash(password, salt);
 
-  const verificationToken = generateVerifyEmailToken(email);
+  const verificationToken = generateVerifyEmailToken({ email, role: USER });
   const hashedVerificationToken = hashToken(verificationToken);
 
   const [userId] = await insertUser({
@@ -58,8 +59,8 @@ const register = async ({
     verificationToken: hashedVerificationToken,
   });
 
-  const accessToken = generateAccessToken(userId?.id!);
-  const refreshToken = generateRefeshToken(userId?.id!);
+  const accessToken = generateAccessToken({ id: userId?.id!, role: USER });
+  const refreshToken = generateRefeshToken({ id: userId?.id!, role: USER });
   const hashedRefreshToken = hashToken(refreshToken);
 
   const updatedUser = await updateUserWithRefreshToken(
@@ -100,8 +101,8 @@ const login = async ({
 
   if (!result) throw new UnauthorizedError("Invalid email or password");
 
-  const accessToken = generateAccessToken(user.id);
-  const refreshToken = generateRefeshToken(user.id);
+  const accessToken = generateAccessToken({ id: user.id, role: user.role });
+  const refreshToken = generateRefeshToken({ id: user.id, role: user.role });
   const hashedRefreshToken = hashToken(refreshToken);
 
   const updatedUser = await updateUserWithRefreshToken(
@@ -126,7 +127,7 @@ const forgot = async ({ email }: { email: string }) => {
   if (!user)
     throw new NotFoundError(`User with given email ${email} not found`);
 
-  const resetToken = generateResetToken(user.id);
+  const resetToken = generateResetToken({ id: user.id, role: user.role });
   const hashedResetToken = hashToken(resetToken);
   await updateUserWithResetToken(hashedResetToken, user.email);
 
