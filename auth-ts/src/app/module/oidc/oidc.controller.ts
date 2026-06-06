@@ -13,4 +13,8 @@ const getKeys = async (req: Request, res: Response) => {
   res.json({ keys: [keys.toJSON()] });
 };
 
-export { getServiceDiscoveryEndpoints, getKeys };
+const authorize = (req: Request, res: Response) => {
+  res.redirect("http://localhost:5173/login");
+};
+
+export { getServiceDiscoveryEndpoints, getKeys, authorize };
