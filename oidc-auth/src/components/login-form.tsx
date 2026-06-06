@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import type { LoginUserType } from '#/types'
 import { authService } from '#/services/authService'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 export function LoginForm({
   className,
@@ -34,13 +34,18 @@ export function LoginForm({
     },
     mode: 'onSubmit',
   })
+
+  const navigate = useNavigate()
+
   const userLogin: SubmitHandler<LoginUserType> = async ({
     email,
     password,
   }: LoginUserType) => {
     try {
       await authService.login({ email, password })
-      console.log('User Loggedin Succesfully')
+      navigate({
+        to: '/profile',
+      })
     } catch (err) {
       console.log(err)
     }

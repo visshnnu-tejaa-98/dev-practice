@@ -18,4 +18,8 @@ export const authService = {
     tokenStore.set(data.data)
     return data
   },
+  async profile() {
+    const { data } = await api.get('/api/auth/profile')
+    return data.data.user
+  },
 }

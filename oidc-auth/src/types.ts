@@ -9,3 +9,9 @@ export type LoginUserType = {
   email: string
   password: string
 }
+
+export type UserType = {
+  name: string
+  email: string
+  id: string
+}

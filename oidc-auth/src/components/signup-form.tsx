@@ -15,7 +15,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -35,11 +35,14 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   })
 
   const password = watch('password')
+  const navigate = useNavigate()
 
   const registerUser = async ({ name, email, password }: RegisterUserType) => {
     try {
       await authService.register({ name, email, password })
-      console.log('User Registered Succesfully')
+      navigate({
+        to: '/profile',
+      })
     } catch (err) {
       console.log(err)
     }
