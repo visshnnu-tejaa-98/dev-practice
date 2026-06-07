@@ -7,6 +7,7 @@ import {
   registerUser,
   verifyUserEmail,
   resetPassword,
+  uploadUserAvatar,
 } from "./auth.controller";
 import { validate } from "../../common/zod/zod.midleware";
 import {
@@ -15,9 +16,11 @@ import {
   registerSchema,
   resetPasswordSchemaFromBody,
   resetPasswordSchemaFromParams,
+  uploadAvatarSchema,
   verifyEmailSchema,
 } from "./auth.schema";
 import { adminOnly, restrictToAuthenticatedUser } from "./auth.middleware";
+import { upload } from "../../common/utils/multer";
 
 const router = express.Router();
 
@@ -33,6 +36,14 @@ router.post(
   validate(resetPasswordSchemaFromParams, "query"),
   resetPassword,
 );
+router.post(
+  "/upload",
+  restrictToAuthenticatedUser(),
+  upload.single("avatar"),
+  validate(uploadAvatarSchema, "file"),
+  uploadUserAvatar,
+);
+
 router.get("/admin", restrictToAuthenticatedUser(), adminOnly(), (req, res) => {
   res.json({ message: "This is admin only route" });
 });

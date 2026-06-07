@@ -9,3 +9,6 @@ export const PRODUCTION = "production";
 export const TEST = "test";
 
 export const envs = [DEVELOPMENT, PRODUCTION, TEST];
+
+export const MAX_AVATAR_FILE_SIZE = 5000000;
+export const ALLOWED_FILE_TYPES = ["image/png", "image/jpeg", "image/pdf"];

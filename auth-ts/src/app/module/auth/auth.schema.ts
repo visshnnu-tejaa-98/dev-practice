@@ -1,5 +1,10 @@
 import z from "zod";
-import { ALLOWED_ROLES, USER } from "../../common/constants";
+import {
+  ALLOWED_FILE_TYPES,
+  ALLOWED_ROLES,
+  MAX_AVATAR_FILE_SIZE,
+  USER,
+} from "../../common/constants";
 
 const registerSchema = z.object({
   name: z
@@ -68,6 +73,20 @@ type ResetPasswordSchemaFromParamsType = z.infer<
   typeof resetPasswordSchemaFromParams
 >;
 
+const uploadAvatarSchema = z
+  .object({
+    size: z.number(),
+    mimetype: z.string(),
+    buffer: z.instanceof(Buffer),
+  })
+  .refine((file) => file.size <= MAX_AVATAR_FILE_SIZE, "Max image size is 5MB")
+  .refine(
+    (file) => ALLOWED_FILE_TYPES.includes(file.mimetype),
+    "Only png, jpeg and pdf files are supported",
+  );
+
+type UploadAvatarSchemaType = z.infer<typeof uploadAvatarSchema>;
+
 export {
   registerSchema,
   verifyEmailSchema,
@@ -75,6 +94,7 @@ export {
   forgotPasswordSchema,
   resetPasswordSchemaFromBody,
   resetPasswordSchemaFromParams,
+  uploadAvatarSchema,
 };
 export type {
   RegisterInputType,
@@ -83,4 +103,5 @@ export type {
   ForgotPasswordSchemaType,
   ResetPasswordSchemaFromBodyType,
   ResetPasswordSchemaFromParamsType,
+  UploadAvatarSchemaType,
 };

@@ -4,7 +4,7 @@ import { ValidationError } from "../utils/api-error";
 
 export const validate = (
   schema: ZodType,
-  source: "body" | "params" | "query" = "body",
+  source: "body" | "params" | "query" | "file" = "body",
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const result = await schema.safeParseAsync(req[source]);

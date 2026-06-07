@@ -4,13 +4,18 @@ import { UnauthorizedError } from "../../common/utils/api-error";
 import { verifyAccessToken } from "../../common/utils/jwt";
 
 interface AuthUser {
-  id: string;
+  iss: string;
+  sub: string;
+  email: string;
+  email_verified: string;
+  name: string;
+  picture: string;
   role: string;
 }
 declare global {
   namespace Express {
     interface Request {
-      user?: AuthUser | JwtPayload;
+      user: AuthUser | JwtPayload;
     }
   }
 }
@@ -31,8 +36,8 @@ const authenticate = () => {
       throw new UnauthorizedError("Invalid or expired token");
     }
 
-    const { iss, sub, email, email_verified, name, picture } = user;
-    req.user = { iss, sub, email, email_verified, name, picture };
+    const { iss, sub, email, email_verified, name, picture, role } = user;
+    req.user = { iss, sub, email, email_verified, name, picture, role };
 
     next();
   };

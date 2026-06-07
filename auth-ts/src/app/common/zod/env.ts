@@ -1,6 +1,5 @@
 import z from "zod";
 import { DEVELOPMENT, envs } from "../constants";
-import { ValidationError } from "../utils/api-error";
 
 const envSchema = z.object({
   PORT: z.coerce.number().default(9000),
@@ -36,6 +35,8 @@ const envSchema = z.object({
   NODEMAILER_EMAIL_USER: z.string().email(),
   NODEMAILER_EMAIL_PASSWORD: z.string(),
   ISSUER_URL: z.string(),
+  IMAGEKIT_PRIVATE_KEY: z.string(),
+  IMAGEKIT_PUBLIC_KEY: z.string(),
 });
 
 const envResult = envSchema.safeParse(process.env);

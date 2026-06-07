@@ -12,6 +12,7 @@ type AccessTokenPayload = {
   email_verified: boolean;
   name: string;
   picture: string;
+  role: string;
 };
 
 const generateSalt = async (rounds: number) => {
@@ -140,3 +141,5 @@ export {
   generateResetToken,
   verifyResetToken,
 };
+
+export type { AccessTokenPayload };

@@ -40,6 +40,7 @@ const insertUser = async ({
       email: usersTable.email,
       isEmailVerified: usersTable.isVerified,
       name: usersTable.name,
+      role: usersTable.role,
       avatar: usersTable.avatar,
     });
   return userId;
@@ -148,6 +149,19 @@ const getUserDetailsByUserId = async (id: string) => {
   return user;
 };
 
+const uploadAvatarInDB = async (userId: string, avatarUrl: string) => {
+  const users = await db
+    .update(usersTable)
+    .set({ avatar: avatarUrl })
+    .where(eq(usersTable.id, userId))
+    .returning({ id: usersTable.id, avatarUrl: usersTable.avatar });
+
+  console.log({ users });
+  if (users.length === 0) throw new BadRequestError();
+  const user = users[0];
+  if (!user) throw new NotFoundError("User not found");
+  return user;
+};
 export {
   checkUserWithEmailExists,
   insertUser,
@@ -159,4 +173,5 @@ export {
   getUserByResetToken,
   updateUserWithNewPassword,
   getUserDetailsByUserId,
+  uploadAvatarInDB,
 };

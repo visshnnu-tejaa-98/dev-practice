@@ -29,9 +29,12 @@ import {
   updateUserWithNewPassword,
   updateUserWithRefreshToken,
   updateUserWithResetToken,
+  uploadAvatarInDB,
 } from "./auth.utils";
 import { USER } from "../../common/constants";
 import { env } from "../../common/zod/env";
+import path from "node:path";
+import { fileUpload } from "../../common/utils/imagekit";
 
 const register = async ({
   name,
@@ -73,6 +76,7 @@ const register = async ({
     email_verified: user.isEmailVerified ?? false,
     name: user.name,
     picture: user.avatar ?? "",
+    role: user.role,
   };
 
   const accessToken = generateAccessToken(claims);
@@ -124,6 +128,7 @@ const login = async ({
     email_verified: user.isVerified ?? false,
     name: user.name,
     picture: user.avatar ?? "",
+    role: user.role,
   };
 
   const accessToken = generateAccessToken(claims);
@@ -191,6 +196,27 @@ const resetUserPassword = async ({
   return updatedUser;
 };
 
+const uploadAvatar = async (userId: string, file: Express.Multer.File) => {
+  try {
+    // console.log()
+    // const fileName = `${Date.now()}-${Math.random() * 1e9}${path.extname(file?.originalname!)}`;
+    const fileName = Date.now().toString();
+
+    const response = await fileUpload(file?.buffer!, fileName);
+
+    if (!response.url) {
+      throw new BadRequestError("something went wrong in file upload");
+    }
+
+    const updatedUser = await uploadAvatarInDB(userId, response.url);
+
+    return updatedUser;
+  } catch (error) {
+    console.error(111, error);
+    throw new BadRequestError("Something went wrong in file upload 222");
+  }
+};
+
 export {
   register,
   verifyEmail,
@@ -199,4 +225,5 @@ export {
   profile,
   forgot,
   resetUserPassword,
+  uploadAvatar,
 };

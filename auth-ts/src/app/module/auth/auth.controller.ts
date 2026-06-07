@@ -7,6 +7,7 @@ import {
   profile,
   register,
   resetUserPassword,
+  uploadAvatar,
   verifyEmail,
 } from "./auth.service";
 import {
@@ -41,8 +42,8 @@ const getUserProfile = async (req: Request, res: Response) => {
   if (!req.user || typeof req.user === "string") {
     throw new UnauthorizedError("Invalid session content");
   }
-  const { id } = req.user;
-  const userDetails = await profile(id);
+  const { sub } = req.user;
+  const userDetails = await profile(sub!);
   ApiResponse.success(res, "Fetched user details successfully", {
     user: userDetails,
   });
@@ -66,6 +67,12 @@ const resetPassword = async (req: Request, res: Response) => {
   ApiResponse.success(res, "Password reset successfully", user);
 };
 
+const uploadUserAvatar = async (req: Request, res: Response) => {
+  const userId = req.user.sub;
+  const response = await uploadAvatar(userId!, req.file!);
+  ApiResponse.success(res, "File uploaded successfully", response);
+};
+
 export {
   registerUser,
   verifyUserEmail,
@@ -75,4 +82,5 @@ export {
   forgotPassword,
   resetPassword,
   getUserProfile,
+  uploadUserAvatar,
 };
