@@ -37,6 +37,10 @@ const insertUser = async ({
     })
     .returning({
       id: usersTable.id,
+      email: usersTable.email,
+      isEmailVerified: usersTable.isVerified,
+      name: usersTable.name,
+      avatar: usersTable.avatar,
     });
   return userId;
 };

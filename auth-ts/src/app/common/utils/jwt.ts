@@ -6,8 +6,12 @@ import { StringValue } from "ms";
 import { createHash } from "node:crypto";
 
 type AccessTokenPayload = {
-  id: string;
-  role: string;
+  iss: string;
+  sub: string;
+  email: string;
+  email_verified: boolean;
+  name: string;
+  picture: string;
 };
 
 const generateSalt = async (rounds: number) => {
@@ -52,8 +56,7 @@ const verifyEmailToken = (token: string) => {
   return jwt.verify(token, secret);
 };
 
-const generateAccessToken = ({ id, role }: { id: string; role: string }) => {
-  const payload = { id, role };
+const generateAccessToken = (payload: AccessTokenPayload) => {
   const secret = env.JWT_ACCESS_TOKEN_SECRET;
   const expiresIn = env.JWT_ACCESS_TOKEN_EXPIRES || "15m";
   if (!secret)

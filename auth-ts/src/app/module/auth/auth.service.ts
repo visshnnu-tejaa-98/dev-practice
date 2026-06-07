@@ -7,6 +7,7 @@ import {
   UnauthorizedError,
 } from "../../common/utils/api-error";
 import {
+  AccessTokenPayload,
   generateAccessToken,
   generateRefeshToken,
   generateResetToken,
@@ -30,6 +31,7 @@ import {
   updateUserWithResetToken,
 } from "./auth.utils";
 import { USER } from "../../common/constants";
+import { env } from "../../common/zod/env";
 
 const register = async ({
   name,
@@ -53,15 +55,28 @@ const register = async ({
   const verificationToken = generateVerifyEmailToken({ email, role: USER });
   const hashedVerificationToken = hashToken(verificationToken);
 
-  const [userId] = await insertUser({
+  const [user] = await insertUser({
     name,
     email,
     password: hashedPassword,
     verificationToken: hashedVerificationToken,
   });
 
-  const accessToken = generateAccessToken({ id: userId?.id!, role: USER });
-  const refreshToken = generateRefeshToken({ id: userId?.id!, role: USER });
+  if (!user) {
+    throw new BadRequestError("User creation failed");
+  }
+
+  const claims: AccessTokenPayload = {
+    iss: env.ISSUER_URL || "http://localhost:9000",
+    sub: user.id.toString(),
+    email: user.email,
+    email_verified: user.isEmailVerified ?? false,
+    name: user.name,
+    picture: user.avatar ?? "",
+  };
+
+  const accessToken = generateAccessToken(claims);
+  const refreshToken = generateRefeshToken({ id: user?.id!, role: USER });
   const hashedRefreshToken = hashToken(refreshToken);
 
   const updatedUser = await updateUserWithRefreshToken(
@@ -71,7 +86,7 @@ const register = async ({
 
   // await sendVerificationEmail(email, verificationToken);
 
-  return { id: userId?.id, accessToken };
+  return { id: user?.id, accessToken };
 };
 
 const verifyEmail = async ({ token }: { token: string }) => {
@@ -102,7 +117,16 @@ const login = async ({
 
   if (!result) throw new UnauthorizedError("Invalid email or password");
 
-  const accessToken = generateAccessToken({ id: user.id, role: user.role });
+  const claims: AccessTokenPayload = {
+    iss: env.ISSUER_URL || "http://localhost:9000",
+    sub: user.id.toString(),
+    email: user.email,
+    email_verified: user.isVerified ?? false,
+    name: user.name,
+    picture: user.avatar ?? "",
+  };
+
+  const accessToken = generateAccessToken(claims);
   const refreshToken = generateRefeshToken({ id: user.id, role: user.role });
   const hashedRefreshToken = hashToken(refreshToken);
 

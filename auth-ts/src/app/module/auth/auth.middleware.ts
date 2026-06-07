@@ -30,10 +30,10 @@ const authenticate = () => {
     if (!user) {
       throw new UnauthorizedError("Invalid or expired token");
     }
-    req.user = {
-      id: user.id,
-      role: user.role,
-    };
+
+    const { iss, sub, email, email_verified, name, picture } = user;
+    req.user = { iss, sub, email, email_verified, name, picture };
+
     next();
   };
 };
