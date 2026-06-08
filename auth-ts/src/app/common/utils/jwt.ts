@@ -3,7 +3,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import { NotFoundError } from "./api-error";
 import { env } from "../zod/env";
 import { StringValue } from "ms";
-import { createHash } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 
 type AccessTokenPayload = {
   iss: string;
@@ -18,6 +18,9 @@ type AccessTokenPayload = {
 const generateSalt = async (rounds: number) => {
   return await bcrypt.genSalt(rounds);
 };
+
+const generateRandomString = (bytes: number) =>
+  randomBytes(bytes).toString("hex");
 
 const hash = async (payload: string, salt: string) => {
   return await bcrypt.hash(payload, salt);
@@ -130,6 +133,7 @@ const verifyResetToken = (token: string) => {
 
 export {
   generateSalt,
+  generateRandomString,
   hash,
   hashToken,
   generateVerifyEmailToken,

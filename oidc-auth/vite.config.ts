@@ -16,6 +16,11 @@ const config = defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/o': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 })

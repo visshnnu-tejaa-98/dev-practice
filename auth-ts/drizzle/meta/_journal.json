@@ -36,6 +36,27 @@
       "when": 1780854102476,
       "tag": "0004_absurd_whirlwind",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1780899878244,
+      "tag": "0005_rich_randall_flagg",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1780901156459,
+      "tag": "0006_smooth_blindfold",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1780906439900,
+      "tag": "0007_wet_ironclad",
+      "breakpoints": true
     }
   ]
 }

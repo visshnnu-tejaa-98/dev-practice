@@ -53,6 +53,9 @@ function RouteComponent() {
         <h1>{user?.name}</h1>
         <p>{user?.id}</p>
         <h3>{user?.email}</h3>
+        <button onClick={() => navigate({ to: '/register-client' })}>
+          Register new client
+        </button>
       </div>
     </div>
   )

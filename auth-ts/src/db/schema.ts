@@ -28,6 +28,24 @@ export const usersTable = pgTable("users", {
   resetToken: text("reset_token"),
   resetTokenExpires: date("reset_token_expires"),
 
+  avatar: text("avatar"),
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
+});
+
+export const applicationsTable = pgTable("applications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => usersTable.id),
+  name: varchar("name", { length: 255 }).notNull(),
+  url: text("url").unique(),
+  redirectUri: text("redirect_uri"),
+
+  clientId: text("client_id").notNull(),
+  clientSecret: text("client_secret"),
+
+  createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });

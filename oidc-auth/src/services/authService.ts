@@ -22,4 +22,26 @@ export const authService = {
     const { data } = await api.get('/api/auth/profile')
     return data.data.user
   },
+
+  async registerClient({
+    redirectUri,
+    applicationDisplayName,
+    applicationUrl,
+  }: {
+    redirectUri: string
+    applicationDisplayName: string
+    applicationUrl: string
+  }) {
+    const { data } = await api.post('/o/register-client', {
+      redirectUri,
+      applicationDisplayName,
+      applicationUrl,
+    })
+    console.log('from: authService', {
+      redirectUri,
+      applicationDisplayName,
+      applicationUrl,
+    })
+    return data
+  },
 }
