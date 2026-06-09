@@ -2,6 +2,7 @@ import { and, eq } from "drizzle-orm";
 import db from "../../../db";
 import { applicationsTable } from "../../../db/schema";
 import { createNewApplicationPropsType } from "./oidc.types";
+import { BadRequestError } from "../../common/utils/api-error";
 
 const getApplicationDetailsByUserIdAndApplicationUrl = async (
   userId: string,
@@ -58,4 +59,26 @@ const createNewApplication = async (props: createNewApplicationPropsType) => {
   return createdApplication;
 };
 
-export { getApplicationDetailsByUserIdAndApplicationUrl, createNewApplication };
+const deleteClientById = async (applicationId: string) => {
+  const deletedItems = await db
+    .delete(applicationsTable)
+    .where(eq(applicationsTable.id, applicationId))
+    .returning({ id: applicationsTable.id });
+
+  if (deletedItems.length === 0)
+    throw new BadRequestError(
+      `Client Application not found with ${applicationId}`,
+    );
+  let deletedApplicationId = applicationId[0];
+  if (!deletedApplicationId)
+    throw new BadRequestError(
+      `Something went wrong in devleting the client appliction with id: ${applicationId}`,
+    );
+  return deletedApplicationId;
+};
+
+export {
+  getApplicationDetailsByUserIdAndApplicationUrl,
+  createNewApplication,
+  deleteClientById,
+};

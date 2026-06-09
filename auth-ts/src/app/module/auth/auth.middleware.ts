@@ -63,4 +63,17 @@ const adminOnly = () => {
   };
 };
 
-export { authenticate, restrictToAuthenticatedUser, adminOnly };
+const superAdminOnly = () => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      throw new UnauthorizedError("Authentication Required");
+    }
+
+    if (req.user.role !== "superAdmin") {
+      throw new UnauthorizedError("Super Admin access required");
+    }
+    next();
+  };
+};
+
+export { authenticate, restrictToAuthenticatedUser, adminOnly, superAdminOnly };

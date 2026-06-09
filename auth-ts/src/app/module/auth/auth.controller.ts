@@ -10,10 +10,7 @@ import {
   uploadAvatar,
   verifyEmail,
 } from "./auth.service";
-import {
-  BadRequestError,
-  UnauthorizedError,
-} from "../../common/utils/api-error";
+import { UnauthorizedError } from "../../common/utils/api-error";
 
 const registerUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;

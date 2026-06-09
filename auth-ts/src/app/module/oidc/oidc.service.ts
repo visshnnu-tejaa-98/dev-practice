@@ -1,8 +1,9 @@
-import { BadRequestError } from "../../common/utils/api-error";
+import { BadRequestError, NotFoundError } from "../../common/utils/api-error";
 import { hashToken, generateRandomString } from "../../common/utils/jwt";
 import { registerClientProps } from "./oidc.types";
 import {
   createNewApplication,
+  deleteClientById,
   getApplicationDetailsByUserIdAndApplicationUrl,
 } from "./oidc.utils";
 
@@ -36,4 +37,10 @@ const registerNewClient = async (props: registerClientProps) => {
   return createdApplication;
 };
 
-export { registerNewClient };
+const deleteClientApplicationById = async (applicationId: string) => {
+  const isDeleted = await deleteClientById(applicationId);
+  console.log({ isDeleted });
+  return isDeleted;
+};
+
+export { registerNewClient, deleteClientApplicationById };

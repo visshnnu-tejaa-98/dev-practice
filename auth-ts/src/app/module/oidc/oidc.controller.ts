@@ -3,9 +3,10 @@ import jose from "node-jose";
 
 import { SERVICE_DISCOVERY_ENDPOINTS } from "./oidc.constants";
 import { PUBLIC_KEY } from "../../common/utils/certs";
-import { registerNewClient } from "./oidc.service";
+import { deleteClientApplicationById, registerNewClient } from "./oidc.service";
 import ApiResponse from "../../common/utils/api-response";
 import { NotFoundError } from "../../common/utils/api-error";
+import { DeleteClientApplicationByClientIdSchemaType } from "./oidc.schema";
 
 const getServiceDiscoveryEndpoints = (req: Request, res: Response) => {
   res.json(SERVICE_DISCOVERY_ENDPOINTS);
@@ -36,4 +37,22 @@ const registerClient = async (req: Request, res: Response) => {
   ApiResponse.created(res, "New Application got created", application);
 };
 
-export { getServiceDiscoveryEndpoints, getKeys, authorize, registerClient };
+const deleteClient = async (
+  req: Request<DeleteClientApplicationByClientIdSchemaType>,
+  res: Response,
+) => {
+  const { id: applicationId } = req.params;
+  await deleteClientApplicationById(applicationId);
+  ApiResponse.success(
+    res,
+    `Application with id ${applicationId} is deleted successfully`,
+  );
+};
+
+export {
+  getServiceDiscoveryEndpoints,
+  getKeys,
+  authorize,
+  registerClient,
+  deleteClient,
+};
