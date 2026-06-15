@@ -274,7 +274,7 @@
         clearTimeout(hideTypingTimer);
         hideTypingTimer = setTimeout(() => {
           typingEl.classList.remove("is-active");
-        }, 1500);
+        }, 2000);
       });
       const messages = document.getElementById("messages");
       function formatTime() {
@@ -294,7 +294,7 @@
         time.textContent = formatTime();
         msg.appendChild(time);
 
-        messages.append(msg);
+        messages.insertBefore(msg, typingEl);
         messages.scrollTop = messages.scrollHeight;
       }
       const composer = document.getElementById("composer");
@@ -315,15 +315,13 @@
         input.value = "";
       });
 
-      let typingTimer = null;
-      input.addEventListener("input", (data) => {
-        if (!typingTimer) {
-          socket.emit("user:typing", data);
+      let lastTypingEmit = 0;
+      input.addEventListener("input", () => {
+        const now = Date.now();
+        if (now - lastTypingEmit > 800) {
+          socket.emit("user:typing");
+          lastTypingEmit = now;
         }
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-          typingTimer = null;
-        }, 1000);
       });
 
       window.onMessageInput = onMessageInput;
