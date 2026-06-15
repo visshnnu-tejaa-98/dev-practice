@@ -19,6 +19,15 @@ async function main() {
       console.log("Message from socket", data);
       socket.broadcast.emit("server:message", data);
     });
+
+    socket.on("user:typing", (data) => {
+      console.log(data);
+      console.log("User is typing", socket.id);
+      socket.broadcast.emit("server:user:typing", {
+        id: socket.id,
+        ...data,
+      });
+    });
   });
 
   const PORT = process.env.PORT || 9002;

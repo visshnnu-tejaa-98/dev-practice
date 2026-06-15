@@ -74,6 +74,7 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
+        position: relative;
       }
 
       .chat__messages::-webkit-scrollbar {
@@ -116,6 +117,51 @@
       .msg--out .msg__meta {
         color: rgba(255, 255, 255, 0.7);
         text-align: right;
+      }
+
+      .typing {
+        align-self: flex-start;
+        display: none;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 14px;
+        background: #1e2330;
+        border-radius: 14px;
+        border-bottom-left-radius: 4px;
+        bottom: 0;
+      }
+
+      .typing.is-active {
+        display: inline-flex;
+      }
+
+      .typing span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #8a93a6;
+        animation: typing-bounce 1.2s infinite ease-in-out;
+      }
+
+      .typing span:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+
+      .typing span:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes typing-bounce {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        30% {
+          transform: translateY(-4px);
+          opacity: 1;
+        }
       }
 
       .chat__composer {
@@ -185,6 +231,12 @@
           What are you working on today?
           <div class="msg__meta">Alice · 10:43</div>
         </div>
+
+        <div class="typing" id="typing">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </section>
 
       <form class="chat__composer" id="composer">
@@ -205,8 +257,24 @@
       const socket = io();
 
       socket.on("server:message", (data) => {
+        appendMessage(data.message, "msg--in");
+      });
+
+      socket.on("server:user:message", (data) => {
         console.log("Message from server", data);
         appendMessage(data.message, "msg msg--in");
+      });
+
+      const typingEl = document.getElementById("typing");
+      let hideTypingTimer = null;
+      socket.on("server:user:typing", (data) => {
+        console.log(data);
+        typingEl.classList.add("is-active");
+        messages.scrollTop = messages.scrollHeight;
+        clearTimeout(hideTypingTimer);
+        hideTypingTimer = setTimeout(() => {
+          typingEl.classList.remove("is-active");
+        }, 1500);
       });
       const messages = document.getElementById("messages");
       function formatTime() {
@@ -245,6 +313,17 @@
         onMessageInput(message);
 
         input.value = "";
+      });
+
+      let typingTimer = null;
+      input.addEventListener("input", (data) => {
+        if (!typingTimer) {
+          socket.emit("user:typing", data);
+        }
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+          typingTimer = null;
+        }, 1000);
       });
 
       window.onMessageInput = onMessageInput;
