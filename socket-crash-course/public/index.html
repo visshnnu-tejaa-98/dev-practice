@@ -199,7 +199,9 @@
       </form>
     </main>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+      const socket = io();
       const messages = document.getElementById("messages");
       function formatTime() {
         return new Date().toLocaleTimeString([], {

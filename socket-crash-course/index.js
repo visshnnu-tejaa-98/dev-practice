@@ -13,6 +13,10 @@ async function main() {
 
   io.attach(server);
 
+  io.on("connection", (socket) =>
+    console.log("A new sockedt has connected!", socket.id),
+  );
+
   const PORT = process.env.PORT || 9002;
   server.listen(PORT, () =>
     console.log(`🚀 Server is up and running in PORT ${PORT}`),
