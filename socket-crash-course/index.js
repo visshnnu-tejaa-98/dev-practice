@@ -13,9 +13,13 @@ async function main() {
 
   io.attach(server);
 
-  io.on("connection", (socket) =>
-    console.log("A new sockedt has connected!", socket.id),
-  );
+  io.on("connection", (socket) => {
+    console.log("A new sockedt has connected!", socket.id);
+    socket.on("user:message", (data) => {
+      console.log("Message from socket", data);
+      socket.broadcast.emit("server:message", data);
+    });
+  });
 
   const PORT = process.env.PORT || 9002;
   server.listen(PORT, () =>

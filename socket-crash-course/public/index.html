@@ -201,7 +201,13 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
+      // You can give host here if client and server running in different ports
       const socket = io();
+
+      socket.on("server:message", (data) => {
+        console.log("Message from server", data);
+        appendMessage(data.message, "msg msg--in");
+      });
       const messages = document.getElementById("messages");
       function formatTime() {
         return new Date().toLocaleTimeString([], {
@@ -210,9 +216,9 @@
         });
       }
 
-      function appendMessage(text, type = "sent") {
+      function appendMessage(text, type = "msg--out") {
         const msg = document.createElement("div");
-        msg.classList = "msg msg--out";
+        msg.classList = `msg ${type}`;
         msg.textContent = text;
 
         const time = document.createElement("div");
@@ -228,6 +234,7 @@
 
       function onMessageInput(message) {
         console.log({ message });
+        socket.emit("user:message", { message });
       }
 
       composer.addEventListener("submit", (event) => {
