@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1 Million Checkboxes</title>
+    <script src="https://cdn.jsdelivr.net/npm/@visshnnu-tejaa/snapcss/dist/snapcss.min.js"></script>
+    <style>
+      body {
+        background:
+          radial-gradient(circle at 20% 0%, #1e3a8a33 0%, transparent 50%),
+          radial-gradient(circle at 80% 100%, #7e22ce33 0%, transparent 50%),
+          #0a0a0f;
+        min-height: 100vh;
+        margin: 0;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+      }
+      .gradient-title {
+        background: linear-gradient(90deg, #a78bfa, #f472b6, #fb7185);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+      .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        gap: 6px;
+      }
+      @media (min-width: 480px) {
+        .checkbox-grid {
+          grid-template-columns: repeat(10, minmax(0, 1fr));
+          gap: 8px;
+        }
+      }
+      @media (min-width: 640px) {
+        .checkbox-grid {
+          grid-template-columns: repeat(12, minmax(0, 1fr));
+          gap: 10px;
+        }
+      }
+      @media (min-width: 768px) {
+        .checkbox-grid {
+          grid-template-columns: repeat(16, minmax(0, 1fr));
+          gap: 12px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .checkbox-grid {
+          grid-template-columns: repeat(20, minmax(0, 1fr));
+          gap: 14px;
+        }
+      }
+      .pretty-check {
+        appearance: none;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        position: relative;
+        transition:
+          background 0.2s ease,
+          border-color 0.2s ease,
+          transform 0.15s ease,
+          box-shadow 0.2s ease;
+      }
+      .pretty-check:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(139, 92, 246, 0.5);
+        transform: translateY(-1px);
+      }
+      .pretty-check:checked {
+        background: linear-gradient(135deg, #8b5cf6, #ec4899);
+        border-color: transparent;
+        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+      }
+      .pretty-check:checked::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 35%;
+        height: 60%;
+        border: solid #fff;
+        border-width: 0 3px 3px 0;
+        transform: translate(-60%, -65%) rotate(45deg);
+      }
+      .pretty-check:active {
+        transform: scale(0.95);
+      }
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 12px #10b981;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1.15;
+      }
+      @media (min-width: 640px) {
+        h1 {
+          font-size: 34px;
+        }
+      }
+      @media (min-width: 1024px) {
+        h1 {
+          font-size: 44px;
+        }
+      }
+      .tagline {
+        font-size: 13px;
+      }
+      @media (min-width: 640px) {
+        .tagline {
+          font-size: 15px;
+        }
+      }
+      .stat-value {
+        font-size: 18px;
+      }
+      @media (min-width: 640px) {
+        .stat-value {
+          font-size: 24px;
+        }
+      }
+      .container {
+        max-width: 100%;
+        padding: 16px 12px;
+      }
+      @media (min-width: 640px) {
+        .container {
+          padding: 24px 20px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 960px;
+          padding: 32px 24px;
+        }
+      }
+      .grid-card {
+        padding: 12px;
+      }
+      @media (min-width: 640px) {
+        .grid-card {
+          padding: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-white">
+    <div class="container mx-auto">
+      <header class="text-center mb-4">
+        <div
+          class="glass inline-flex items-center gap-2 px-3 py-2 rounded-full mb-3"
+        >
+          <span class="status-dot"></span>
+          <span class="text-sm text-gray-300" id="status-text">
+            Connecting...
+          </span>
+        </div>
+        <h1 class="gradient-title mb-3">1 Million Checkboxes</h1>
+        <p class="tagline text-gray-400 m-0">
+          Click a checkbox. Watch it sync in real-time.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="glass grid-card rounded-xl text-center">
+          <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">
+            Checked
+          </div>
+          <div class="stat-value font-bold text-violet-400" id="checked-count">
+            0
+          </div>
+        </div>
+        <div class="glass grid-card rounded-xl text-center">
+          <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">
+            Total
+          </div>
+          <div class="stat-value font-bold text-pink-400" id="total-count">
+            500
+          </div>
+        </div>
+        <div class="glass grid-card rounded-xl text-center">
+          <div class="text-xs text-gray-400 uppercase tracking-wider mb-1">
+            Progress
+          </div>
+          <div class="stat-value font-bold text-rose-400" id="progress-count">
+            0%
+          </div>
+        </div>
+      </div>
+
+      <div class="glass grid-card rounded-2xl shadow-2xl">
+        <div id="checkbox-container" class="checkbox-grid"></div>
+      </div>
+
+      <footer class="text-center mt-4 text-gray-500 text-sm">
+        Built with
+        <span class="text-violet-400">Socket.IO</span> &amp;
+        <span class="text-pink-400">SnapCSS</span>
+      </footer>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const container = document.getElementById("checkbox-container");
+      const statusText = document.getElementById("status-text");
+      const checkedCount = document.getElementById("checked-count");
+      const progressCount = document.getElementById("progress-count");
+      const TOTAL = 500;
+
+      const updateStats = () => {
+        const checked = document.querySelectorAll(
+          "input[type='checkbox']:checked",
+        ).length;
+        checkedCount.textContent = checked;
+        progressCount.textContent = Math.round((checked / TOTAL) * 100) + "%";
+      };
+
+      const handleClick = (index) => {
+        socket.emit("user:click", { id: index });
+      };
+
+      const checkboxes = Array.from({ length: TOTAL }, (_, index) => {
+        let input = document.createElement("input");
+        input.setAttribute("id", index);
+        input.setAttribute("type", "checkbox");
+        input.className = "pretty-check";
+        input.addEventListener("click", () => handleClick(index));
+        return input;
+      });
+
+      container.append(...checkboxes);
+
+      socket.on("connect", () => {
+        statusText.textContent = "Connected · Live";
+      });
+
+      socket.on("disconnect", () => {
+        statusText.textContent = "Disconnected";
+      });
+
+      socket.on("db:data", (data) => {
+        setTimeout(() => {
+          const allInputs = document.querySelectorAll("input[type='checkbox']");
+          allInputs.forEach((input) => (input.checked = false));
+          data.forEach((index) => {
+            const el = document.getElementById(index);
+            if (el) el.checked = true;
+          });
+          updateStats();
+        }, 0);
+      });
+    </script>
+  </body>
+</html>
