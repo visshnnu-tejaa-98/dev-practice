@@ -5,6 +5,7 @@ import { Redis } from "ioredis";
 const PORT = 9000;
 const BANNER_KEY = "app:banner";
 const EMAIL_KEY = "queue:emails";
+const LEADERBOARD_KEY = "leaderboard:score";
 
 // Configurations
 const app = express();
@@ -19,6 +20,14 @@ const otpKey = (phone) => {
 
 const userKey = (id) => {
   return `user:${id}:json`;
+};
+
+const postViewKey = (id) => {
+  return `post:${id}:view`;
+};
+
+const userScoreKey = (userId) => {
+  return `user:leaderboard:score`;
 };
 
 // Routes
@@ -128,6 +137,58 @@ app.get("/emails", async (req, res) => {
   const data = await redis.rpop(EMAIL_KEY);
   console.log(data);
   res.json({ data: JSON.parse(data) });
+});
+
+// incr
+// zincrby
+// zrevrange
+// zrevrank
+
+app.post("/post/:id/view", async (req, res) => {
+  const { id } = req.params;
+  const count = await redis.get(postViewKey(id));
+  if (count === null) {
+    await redis.set(postViewKey(id), 1);
+  } else if (typeof Number(count) === "number") {
+    await redis.incr(postViewKey(id));
+  } else {
+    res.json({ message: "Invalid" });
+  }
+  const finalCount = await redis.get(postViewKey(id));
+  res.json({ data: "New view added", finalCount });
+});
+
+app.post("/leaderboard/score", async (req, res) => {
+  const { id: userId, points } = req.body;
+  const key = LEADERBOARD_KEY;
+  const score = await redis.zscore(key, userId);
+
+  const finalScore = await redis.zincrby(key, +points, userId);
+
+  res.json({
+    data: {
+      initialPoints: score,
+      addedPoints: points,
+      finalPoints: finalScore,
+    },
+  });
+});
+
+app.get("/leaderboard", async (req, res) => {
+  const leaderboard = await redis.zrevrange(LEADERBOARD_KEY, 0, 5);
+
+  res.json({
+    data: leaderboard,
+  });
+});
+
+app.get("/leaderboard/:userId/rank", async (req, res) => {
+  const { userId } = req.params;
+  const rank = await redis.zrevrank(LEADERBOARD_KEY, userId);
+
+  res.json({
+    rank,
+  });
 });
 
 app.listen(PORT, () => {
