@@ -2,6 +2,9 @@ import express from "express";
 import { Redis } from "ioredis";
 import { emailQueue } from "./queue.js";
 
+// check this video here how to run this?
+// https://www.youtube.com/watch?v=UHpUq-Mvvkc&list=PLxamJ86SDCj28nzE9l6frczaVhPX7P7o7&index=7
+
 const app = express();
 app.use(express.json());
 
