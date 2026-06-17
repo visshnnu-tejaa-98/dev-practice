@@ -1,7 +1,8 @@
+import "dotenv/config";
 import { createServer } from "node:http";
+import path from "node:path";
 import express from "express";
 import { Server } from "socket.io";
-import path from "node:path";
 
 async function main() {
   const app = express();
@@ -15,7 +16,7 @@ async function main() {
   const db = new Set();
 
   io.on("connection", (socket) => {
-    console.log("Socked connected", socket.id);
+    // console.log("Socked connected", socket.id);
     socket.emit("db:data", Array.from(db));
     socket.on("user:click", (data) => {
       if (!db.has(data.id)) {
@@ -27,7 +28,7 @@ async function main() {
     });
   });
 
-  const PORT = 9000;
+  const PORT = process.env.PORT || 9000;
 
   server.listen(PORT, () =>
     console.log(`🚀 Server is up and running at port ${PORT}`),
