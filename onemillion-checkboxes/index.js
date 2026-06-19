@@ -35,9 +35,7 @@ async function main() {
       const rawData = await redis.get(CHECKBOX_DB_KEY);
 
       if (rateLimitHashMap.has(`user:click:${socket.id}`)) {
-        const lastOperationTime = rateLimitHashMap.get(
-          `user:click:${socket.id}`,
-        );
+        const lastOperationTime = await redis.get(`rate-limiting:${socket.id}`);
 
         if (lastOperationTime) {
           const timeElapsed = Date.now() - lastOperationTime;
@@ -47,7 +45,7 @@ async function main() {
           }
         }
       }
-      rateLimitHashMap.set(`user:click:${socket.id}`, Date.now());
+      await redis.set(`rate-limiting:${socket.id}`, Date.now());
       if (rawData) {
         const remoteData = JSON.parse(rawData);
 
