@@ -15,7 +15,7 @@ async function main() {
 
   io.attach(server);
 
-  const db = new Set();
+  const rateLimitHashMap = new Map();
 
   await subscriber.subscribe("internal-server:checkbox:change");
   subscriber.on("message", (channel, message) => {
@@ -34,6 +34,20 @@ async function main() {
     socket.on("user:click", async (data) => {
       const rawData = await redis.get(CHECKBOX_DB_KEY);
 
+      if (rateLimitHashMap.has(`user:click:${socket.id}`)) {
+        const lastOperationTime = rateLimitHashMap.get(
+          `user:click:${socket.id}`,
+        );
+
+        if (lastOperationTime) {
+          const timeElapsed = Date.now() - lastOperationTime;
+          if (timeElapsed < 5.5 * 1000) {
+            socket.emit("click:error", { error: "Please wait!" });
+            return;
+          }
+        }
+      }
+      rateLimitHashMap.set(`user:click:${socket.id}`, Date.now());
       if (rawData) {
         const remoteData = JSON.parse(rawData);
 
