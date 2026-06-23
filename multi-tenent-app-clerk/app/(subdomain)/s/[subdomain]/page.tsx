@@ -1,3 +1,4 @@
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
 import { blogTable } from "@/db/schema";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -20,12 +21,12 @@ export default async function HomePage({
     .where(eq(blogTable.orgId, orgId));
 
   return (
-    <div>
+    <div className="w-[80%] mx-auto pt-5">
       {blogs.map((blog) => (
-        <div>
-          <h3>{blog.title}</h3>
-          <p>{blog.content}</p>
-        </div>
+        <Card className="p-2 mb-2" key={blog.id}>
+          <CardTitle>{blog.title}</CardTitle>
+          <CardContent>{blog.content}</CardContent>
+        </Card>
       ))}
     </div>
   );
