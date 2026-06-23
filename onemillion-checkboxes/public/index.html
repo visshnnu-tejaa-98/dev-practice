@@ -173,6 +173,93 @@
           padding: 16px;
         }
       }
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(20, 20, 28, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #fff;
+        padding: 12px 12px 12px 14px;
+        border-radius: 14px;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow:
+          0 16px 40px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(139, 92, 246, 0.15) inset;
+        backdrop-filter: blur(12px);
+        opacity: 0;
+        transform: translateX(120%);
+        pointer-events: none;
+        transition:
+          opacity 0.3s ease,
+          transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        z-index: 50;
+        max-width: calc(100vw - 40px);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+      .toast-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #a78bfa, #f472b6, #fb7185);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(244, 114, 182, 0.35);
+      }
+      .toast-message {
+        flex: 1;
+        white-space: nowrap;
+      }
+      .toast-close {
+        appearance: none;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.55);
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+        flex-shrink: 0;
+      }
+      .toast-close:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+      }
+      .toast-close svg {
+        width: 14px;
+        height: 14px;
+      }
+      @media (max-width: 480px) {
+        .toast {
+          top: 12px;
+          right: 12px;
+          left: 12px;
+          max-width: none;
+        }
+        .toast-message {
+          white-space: normal;
+        }
+      }
     </style>
   </head>
   <body class="text-white">
@@ -230,6 +317,27 @@
       </footer>
     </div>
 
+    <div id="toast" class="toast" role="status" aria-live="polite">
+      <span class="toast-icon">!</span>
+      <span id="toast-message" class="toast-message">Please wait!</span>
+      <button
+        id="toast-close"
+        class="toast-close"
+        type="button"
+        aria-label="Dismiss"
+      >
+        <svg
+          viewBox="0 0 14 14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        >
+          <path d="M2 2l10 10M12 2L2 12" />
+        </svg>
+      </button>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
@@ -237,7 +345,32 @@
       const statusText = document.getElementById("status-text");
       const checkedCount = document.getElementById("checked-count");
       const progressCount = document.getElementById("progress-count");
-      const TOTAL = 500;
+      const TOTAL = 1000;
+      const RATE_LIMIT_MS = 5500;
+
+      let lockUntil = 0;
+      let lastKnownData = [];
+      let toastTimer = null;
+      const toastEl = document.getElementById("toast");
+      const toastMessage = document.getElementById("toast-message");
+      const toastClose = document.getElementById("toast-close");
+
+      const hideToast = () => {
+        toastEl.classList.remove("show");
+        if (toastTimer) {
+          clearTimeout(toastTimer);
+          toastTimer = null;
+        }
+      };
+
+      const showToast = (message, duration = 3000) => {
+        toastMessage.textContent = message;
+        toastEl.classList.add("show");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(hideToast, duration);
+      };
+
+      toastClose.addEventListener("click", hideToast);
 
       const updateStats = () => {
         const checked = document.querySelectorAll(
@@ -247,7 +380,24 @@
         progressCount.textContent = Math.round((checked / TOTAL) * 100) + "%";
       };
 
-      const handleClick = (index) => {
+      const renderState = (data) => {
+        lastKnownData = data;
+        const allInputs = document.querySelectorAll("input[type='checkbox']");
+        allInputs.forEach((input) => (input.checked = false));
+        data.forEach((index) => {
+          const el = document.getElementById(index);
+          if (el) el.checked = true;
+        });
+        updateStats();
+      };
+
+      const handleClick = (e, index) => {
+        if (Date.now() < lockUntil) {
+          e.preventDefault();
+          showToast("Please wait!");
+          return;
+        }
+        lockUntil = Date.now() + RATE_LIMIT_MS;
         socket.emit("user:click", { id: index });
       };
 
@@ -256,7 +406,7 @@
         input.setAttribute("id", index);
         input.setAttribute("type", "checkbox");
         input.className = "pretty-check";
-        input.addEventListener("click", () => handleClick(index));
+        input.addEventListener("click", (e) => handleClick(e, index));
         return input;
       });
 
@@ -266,20 +416,18 @@
         statusText.textContent = "Connected · Live";
       });
 
+      socket.on("click:error", (data) => {
+        lockUntil = Date.now() + RATE_LIMIT_MS;
+        renderState(lastKnownData);
+        showToast(data.error || "Please wait!");
+      });
+
       socket.on("disconnect", () => {
         statusText.textContent = "Disconnected";
       });
 
       socket.on("db:data", (data) => {
-        setTimeout(() => {
-          const allInputs = document.querySelectorAll("input[type='checkbox']");
-          allInputs.forEach((input) => (input.checked = false));
-          data.forEach((index) => {
-            const el = document.getElementById(index);
-            if (el) el.checked = true;
-          });
-          updateStats();
-        }, 0);
+        setTimeout(() => renderState(data), 0);
       });
     </script>
   </body>
