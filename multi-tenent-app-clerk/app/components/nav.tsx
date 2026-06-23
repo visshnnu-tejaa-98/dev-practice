@@ -9,7 +9,7 @@ const Nav: React.FC = () => {
           <h1 className="font-semibold text-xl">Blog Application</h1>
         </div>
         <div className="flex gap-2 justify-center items-center">
-          <OrganizationSwitcher />
+          <OrganizationSwitcher afterSelectOrganizationUrl={"/org/:slug"} />
           <UserButton />
         </div>
       </div>
