@@ -10,3 +10,6 @@ export const blogTable = pgTable("blogs", {
     .defaultNow()
     .$onUpdate(() => new Date()),
 });
+
+export type CreateBlogType = typeof blogTable.$inferInsert;
+export type SelectBlogType = typeof blogTable.$inferSelect;
