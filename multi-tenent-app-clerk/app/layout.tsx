@@ -44,10 +44,7 @@ export default function RootLayout({
               </button>
             </SignUpButton>
           </Show>
-          <Show when="signed-in">
-            <UserButton />
-            {children}
-          </Show>
+          <Show when="signed-in">{children}</Show>
         </ClerkProvider>
       </body>
     </html>
