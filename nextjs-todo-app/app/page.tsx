@@ -1,6 +1,8 @@
-import Image from "next/image";
+import { fetchTodos } from "@/lib/todos";
 
-export default function Home() {
+export default async function Home() {
+  const todos = await fetchTodos();
+  console.log({ todos });
   return (
     <div>
       <h1>Hello</h1>
