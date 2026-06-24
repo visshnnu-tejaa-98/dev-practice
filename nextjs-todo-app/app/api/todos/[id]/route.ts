@@ -14,3 +14,20 @@ export const DELETE = async (request: NextRequest) => {
     return NextResponse.json({ success: false, error: error }, { status: 500 });
   }
 };
+
+export const PATCH = async (request: NextRequest) => {
+  try {
+    const { id } = await request.json();
+    const data = await prisma.todo.update({
+      where: {
+        id,
+      },
+      data: {
+        completed: true,
+      },
+    });
+    return NextResponse.json({ success: true, data: data }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ success: false, error: error }, { status: 500 });
+  }
+};

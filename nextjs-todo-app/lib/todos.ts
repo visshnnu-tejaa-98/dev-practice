@@ -48,3 +48,21 @@ export const deleteTodo = async (id: string) => {
   console.log({ json });
   return json.success ? json.data : [];
 };
+
+export const completeTodo = async (id: string) => {
+  const url = `${BASE_URL}/api/todos/${id}`;
+  const headers = {
+    method: "PATCH",
+    "Content-Type": "application/json",
+    body: JSON.stringify({ id }),
+  };
+
+  const res = await fetch(url, headers);
+  if (!res.ok) {
+    return [];
+  }
+
+  const json = await res.json();
+  console.log({ json });
+  return json.success ? json.data : [];
+};
