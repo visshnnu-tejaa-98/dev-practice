@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (request: NextRequest) => {
   try {
     const todos = await prisma.todo.findMany();
-    return NextResponse.json({ success: false, data: todos }, { status: 500 });
+    return NextResponse.json({ success: true, data: todos }, { status: 200 });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json(
@@ -16,8 +16,8 @@ export const GET = async (request: NextRequest) => {
 
 export const POST = async (request: Request) => {
   try {
-    console.log({ request });
-    const { title } = await request.json();
+    const parsedData = await request.json();
+    const { title } = parsedData;
     if (!title) {
       throw new Error("Title is required");
     }

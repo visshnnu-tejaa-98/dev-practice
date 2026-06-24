@@ -1,13 +1,14 @@
 "use client";
 import { addTodo } from "@/lib/todos";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const InputForm = () => {
   const [todo, setTodo] = useState("");
+  const router = useRouter();
   const createTodo = async () => {
-    console.log(todo);
     const { id } = await addTodo(todo);
-    console.log(id);
+    router.refresh();
   };
   return (
     <div>

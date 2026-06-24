@@ -30,3 +30,21 @@ export const addTodo = async (title: string) => {
   const json = await res.json();
   return json.success ? json.data : [];
 };
+
+export const deleteTodo = async (id: string) => {
+  const url = `${BASE_URL}/api/todos/${id}`;
+  const headers = {
+    method: "DELETE",
+    "Content-Type": "application/json",
+    body: JSON.stringify({ id }),
+  };
+
+  const res = await fetch(url, headers);
+  if (!res.ok) {
+    return [];
+  }
+
+  const json = await res.json();
+  console.log({ json });
+  return json.success ? json.data : [];
+};
