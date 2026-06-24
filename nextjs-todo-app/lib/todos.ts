@@ -13,3 +13,20 @@ export const fetchTodos = async () => {
   const json = await res.json();
   return json.success ? json.data : [];
 };
+
+export const addTodo = async (title: string) => {
+  const url = `${BASE_URL}/api/todos`;
+  const headers = {
+    method: "POST",
+    "Content-Type": "application/json",
+    body: JSON.stringify({ title }),
+  };
+
+  const res = await fetch(url, headers);
+  if (!res.ok) {
+    return [];
+  }
+
+  const json = await res.json();
+  return json.success ? json.data : [];
+};

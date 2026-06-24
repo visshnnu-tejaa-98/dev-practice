@@ -1,13 +1,39 @@
 import { prisma } from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   try {
-    const response = await prisma.todo.findMany();
-    console.log(response);
+    const todos = await prisma.todo.findMany();
+    return NextResponse.json({ success: false, data: todos }, { status: 500 });
   } catch (error: any) {
     console.log(error);
-    NextResponse.json(
+    return NextResponse.json(
+      { success: false, error: error?.message },
+      { status: 500 },
+    );
+  }
+};
+
+export const POST = async (request: Request) => {
+  try {
+    console.log({ request });
+    const { title } = await request.json();
+    if (!title) {
+      throw new Error("Title is required");
+    }
+    const response = await prisma.todo.create({
+      data: {
+        title: title,
+        completed: false,
+      },
+    });
+    return NextResponse.json(
+      { success: true, data: response },
+      { status: 200 },
+    );
+  } catch (error: any) {
+    console.log(error);
+    return NextResponse.json(
       { success: false, error: error?.message },
       { status: 500 },
     );
