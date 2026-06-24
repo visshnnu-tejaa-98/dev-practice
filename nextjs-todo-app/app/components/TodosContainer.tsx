@@ -2,16 +2,17 @@
 import { useRouter } from "next/navigation";
 import { Todo } from "../page";
 import { completeTodo, deleteTodo } from "@/lib/todos";
+import { completeTodoById, deleteTodoById } from "@/actions/todo";
 
 const TodosContainer = ({ todos }: { todos: Todo[] }) => {
   const router = useRouter();
   const handleDelete = async (id: string) => {
-    await deleteTodo(id);
+    await deleteTodoById(id);
     router.refresh();
   };
 
   const handleBuildComplete = async (id: string) => {
-    await completeTodo(id);
+    await completeTodoById(id);
     router.refresh();
   };
   return (
