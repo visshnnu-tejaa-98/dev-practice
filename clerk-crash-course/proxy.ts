@@ -1,6 +1,38 @@
-import { clerkMiddleware } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-export default clerkMiddleware()
+const publicRoutes = ["/", "/api/webhook/register", "/sign-in", "sign-up"]
+
+export default clerkMiddleware(async (auth, req) => {
+    const authDetails = await auth()
+    const role = authDetails.sessionClaims?.metadata?.role
+    const userId = authDetails?.sessionClaims?.sub
+    const currentPath = req.nextUrl.pathname
+
+    if (!userId && !publicRoutes.includes(currentPath)) {
+        return NextResponse.redirect(new URL("/sign-in", req.url))
+    }
+
+    if (userId) {
+        try {
+            if (role === "admin" && currentPath === "/dashboard") {
+                return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+            } else if (role === "admin" && publicRoutes.includes(currentPath)) {
+                return NextResponse.redirect(new URL("/dashboard", req.url))
+            } else if (role !== "admin" && publicRoutes.includes(currentPath)) {
+                return NextResponse.redirect(new URL("/dashboard", req.url))
+            } else {
+                return NextResponse.redirect(new URL("/dashboard", req.url))
+            }
+        } catch (error) {
+            return NextResponse.redirect(new URL("/error", req.url));
+        }
+    }
+
+    if (role === "admin") {
+        return NextResponse.redirect(new URL("/admin/dashboard", req.url))
+    }
+});
 
 export const config = {
     matcher: [
